@@ -2,6 +2,7 @@
 
 using namespace vex;
 namespace dt = drivetrain;
+namespace tracking = trackingWheels;
 
 
 // Make a curve towards an object. We will input how far the curve will last,
@@ -10,11 +11,11 @@ void turnCurve(const double& targetDistance, const double& leftSpeed, const &dou
   constexpr double lowerPowerLimit = 15.0;
   constexpr double pctToVoltsCoeff = 12.0;
 
-  double drivenWheelDegreesToComplete = dt::convert::inchesToDrivenWheelDegrees(targetDistance);
+  double trackingWheelDegreesToComplete = tracking::convert::inchesToWheelDegrees(targetDistance);
   
   LeftRotation.resetPosition();
   while (fabs(LeftRotation.position(deg)) < degrees) {
-    double percentCompleted = 100 * fabs(FrontLeftDrive.angle()) / drivenWheelDegreesToComplete;
+    double percentCompleted = 100 * fabs(LeftRotation.position()) / trackingWheelDegreesToComplete;
     
     if (percentCompleted <= 3) {
       double lSpeed = clamp(leftSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
@@ -60,8 +61,7 @@ void positionTracking() {
   globalX = 36.0; 
   globalY = 0.0;
 
-  LeftRotation.resetPosition();
-  RightRotation.resetPosition();
+  tracking::resetPositions();
   while (true) {
     // Add 360 to prevent it going negative, add 90 for degree shift to match the polar coordinate system
     double initialHeadingDeg = fmod(360.0 + 90.0 - Inertial.heading(), 360.0);
@@ -70,8 +70,8 @@ void positionTracking() {
     double initialRight = RightRotation.position(deg);
     wait(5, msec);
 
-    double leftChange = (LeftRotation.position(deg) - initialLeft) * dt::trackingWheelSizeInInches * M_PI / 360.0;
-    double rightChange = (RightRotation.position(deg) - initialRight) * dt::trackingWheelSizeInInches * M_PI / 360.0;
+    double leftChange = (LeftRotation.position(deg) - initialLeft) * tracking::wheelSizeInInches * M_PI / 360.0;
+    double rightChange = (RightRotation.position(deg) - initialRight) * tracking::wheelSizeInInches * M_PI / 360.0;
     double movement = (leftChange + rightChange) / 2;
 
     globalX += cos(initialHeadingRad) * movement;
@@ -120,11 +120,7 @@ void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double
     turnHeading = changeX > 0 ? 360 - deviationHeading : 180 + deviationHeading;
   }
 
-  if (turnDirection == E_TURN_DIRECTION_LEFT) {
-    turnLeft(turnHeading);
-  } else {
-    turnRight(turnHeading);
-  }
+  turn(turnDirection, turnHeading);
 
   int signX = changeX < 0 ? -1 : 1;
   int signY = changeY < 0 ? -1 : 1;
@@ -157,188 +153,139 @@ void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double
 }
 
 void turnLeft(double degrees) {
-  int finalHeading = (450 - degrees) % 360;
+  constexpr double kP = 0.11;
+  constexpr double kD = 30;
+  constexpr int flatTurnValue = 1;
+
+  // Add 360 to prevent negatives (break the mod), add 90 for shift to match
+  // up with the polar coordinate system
+  double finalHeading = fmod(360.0 + 90.0 - degrees, 360.0);
   double changeHeading = finalHeading - Inertial.heading();
-  if (changeHeading > 0) {
-    changeHeading = changeHeading - 360;
-  }
-  float origChangeHeading = changeHeading;
+  changeHeading -= changeHeading > 0 ? 360 : 0;
+  double origChangeHeading = changeHeading;
+
   Inertial.resetRotation();
   wait(30, msec);
-  // 0.07 for auton
-  float kp = 0.11;
-  float kd = 30;
-  float previousAngleError;
-  float angleDerivative;
-  float turnV = 1.5;
-  int flatTurnValue = 1;
-  float angleError = Inertial.rotation(deg) - changeHeading;
-  previousAngleError = angleError;
-  while (Inertial.rotation(deg) > (changeHeading)) {
-    angleError = Inertial.rotation(deg) - changeHeading;
-    angleDerivative = angleError - previousAngleError;
-    turnV = (angleError * kp) - (angleDerivative * kd) + flatTurnValue;
-    previousAngleError = angleError;
-    // if(turnV > 17){turnV = 17;}  //auton
-    // if(turnV < 10){turnV = 10;}  //auton
-    if (turnV > 25) {
-      turnV = 25;
-    } // skills
-    if (turnV < 15) {
-      turnV = 15;
-    } // skills
 
-    BackLeftDrive.spin(fwd, -turnV * 2 * 12 / 100, volt);
-    FrontLeftDrive.spin(fwd, -turnV * 2 * 12 / 100, volt);
-    BackRightDrive.spin(fwd, turnV * 2 * 12 / 100, volt);
-    FrontRightDrive.spin(fwd, turnV * 2 * 12 / 100, volt);
+  double turnVelocity = 1.5;
+  double previousAngleError = Inertial.rotation(deg) - changeHeading;
+  while (Inertial.rotation(deg) > changeHeading) {
+    double angleError = Inertial.rotation(deg) - changeHeading;
+    double angleDerivative = angleError - previousAngleError;
+    previousAngleError = angleError;
+
+    turnVelocity = (angleError * kP) - (angleDerivative * kD) + flatTurnValue;
+    turnVelocity = clamp(turnVelocity, 15, 25);
+
+    dt::spinInVolts(-turnVelocity * 2 * 12 / 100, dt::E_SIDE_LEFT);
+    dt::spinInVolts(turnVelocity * 2 * 12 / 100, dt::E_SIDE_RIGHT);
     wait(10, msec);
   }
-  /*
-  finalHeading = (450 - degrees)%360;
-  changeHeading = finalHeading - Inertial.heading();
-  if(changeHeading > 0){ changeHeading = changeHeading - 360;}
-  origChangeHeading = changeHeading;
-  Inertial.resetRotation();
-  wait(30, msec);
-  kp = 0.125;
-  kd = 60;
-  turnV = 1.5;
-  flatTurnValue = 2;
-  angleError = Inertial.rotation(deg) - changeHeading;
-  previousAngleError = angleError;
-  while(Inertial.rotation(deg) > changeHeading){
-    angleError = Inertial.rotation(deg) - changeHeading;
-    angleDerivative = angleError - previousAngleError;
-    turnV = (angleError * kp) - (angleDerivative * kd) + flatTurnValue;
-    previousAngleError = angleError;
-    if(turnV > 50){turnV = 50;}
 
-
-    BackLeftDrive.spin(fwd, -turnV * 2, pct);
-    FrontLeftDrive.spin(fwd, -turnV * 2, pct);
-    BackRightDrive.spin(fwd, turnV * 2, pct);
-    FrontRightDrive.spin(fwd, turnV * 2, pct);
-  }
-  */
-  BackLeftDrive.spin(fwd, 20, pct);
-  FrontLeftDrive.spin(fwd, 20, pct);
-  BackRightDrive.spin(fwd, -20, pct);
-  FrontRightDrive.spin(fwd, -20, pct);
+  dt::spinInVolts(0.2 * 12.0, dt::E_SIDE_LEFT);
+  dt::spinInVolts(-0.2 * 12.0, dt::E_SIDE_RIGHT);
   wait(fabs(5 / 3 * origChangeHeading), msec);
-  BackLeftDrive.stop(coast);
-  BackRightDrive.stop(coast);
-  FrontLeftDrive.stop(coast);
-  FrontRightDrive.stop(coast);
+  
+  dt::stopAll(coast);
 }
 
 void turnRight(double degrees) {
-  int finalHeading = (450 - degrees);
-  if (finalHeading > 360) {
-    finalHeading = finalHeading - 360;
-  }
+  constexpr double kP = 0.11;
+  constexpr double kD = 30;
+  constexpr int flatTurnValue = 1;
+
+  // Add 360 to prevent negatives (break the mod), add 90 for shift to match
+  // up with the polar coordinate system
+  double finalHeading = fmod(360.0 + 90.0 - degrees, 360.0);
   double changeHeading = finalHeading - Inertial.heading();
-  if (changeHeading < 0) {
-    changeHeading = changeHeading + 360;
-  }
-  float origChangeHeading = changeHeading;
+  changeHeading -= changeHeading > 0 ? 360 : 0;
+  double origChangeHeading = changeHeading;
+
   Inertial.resetRotation();
   wait(30, msec);
-  float kp = 0.11; // 0.07 for auton
-  float kd = 30;
-  float previousAngleError;
-  float angleDerivative;
-  float turnV = 1.5;
-  int flatTurnValue = 1;
-  float angleError = changeHeading - Inertial.rotation(deg);
-  previousAngleError = angleError;
-  while (Inertial.rotation(deg) < (changeHeading - 5)) {
-    angleError = changeHeading - Inertial.rotation(deg);
-    angleDerivative = angleError - previousAngleError;
-    turnV = (angleError * kp) + (angleDerivative * kd) + flatTurnValue;
-    previousAngleError = angleError;
-    // if(turnV > 17){turnV = 17;}  //auton
-    // if(turnV < 10){turnV = 10;}  //auton
-    if (turnV > 25) {
-      turnV = 25;
-    } // skills
-    if (turnV < 15) {
-      turnV = 15;
-    } // skills
 
-    BackLeftDrive.spin(fwd, turnV * 2 * 12 / 100, volt);
-    FrontLeftDrive.spin(fwd, turnV * 2 * 12 / 100, volt);
-    BackRightDrive.spin(fwd, -turnV * 2 * 12 / 100, volt);
-    FrontRightDrive.spin(fwd, -turnV * 2 * 12 / 100, volt);
+  double turnVelocity = 1.5;
+  double previousAngleError = Inertial.rotation(deg) - changeHeading;
+  while (Inertial.rotation(deg) > changeHeading) {
+    double angleError = Inertial.rotation(deg) - changeHeading;
+    double angleDerivative = angleError - previousAngleError;
+    previousAngleError = angleError;
+
+    turnVelocity = (angleError * kP) - (angleDerivative * kD) + flatTurnValue;
+    turnVelocity = clamp(turnVelocity, 15, 25);
+
+    dt::spinInVolts(turnVelocity * 2 * 12 / 100, dt::E_SIDE_LEFT);
+    dt::spinInVolts(-turnVelocity * 2 * 12 / 100, dt::E_SIDE_RIGHT);
     wait(10, msec);
   }
-  /*
-  finalHeading = (450 - degrees);
-  if(finalHeading > 360){ finalHeading = finalHeading - 360;}
-  changeHeading = finalHeading - Inertial.heading();
-  if(changeHeading < 0){ changeHeading = changeHeading + 360;}
-  origChangeHeading = changeHeading;
+
+  dt::spinInVolts(-0.2 * 12.0, dt::E_SIDE_LEFT);
+  dt::spinInVolts(0.2 * 12.0, dt::E_SIDE_RIGHT);
+  wait(fabs(5 / 3 * origChangeHeading), msec);
+  
+  dt::stopAll(coast);
+}
+
+void turn(const autonTurnDirection& direction, const double& degrees) {
+  constexpr double kP = 0.11;
+  constexpr double kD = 30;
+  constexpr int flatTurnValue = 1;
+
+  // Multiply voltages by this to turn left or right, -1 -> left, 1 -> right
+  constexpr directionCoeff = direction == E_TURN_DIRECTION_LEFT ? -1 : 1;
+
+  // Add 360 to prevent negatives (break the mod), add 90 for shift to match
+  // up with the polar coordinate system
+  double finalHeading = fmod(360.0 + 90.0 - degrees, 360.0);
+  double changeHeading = finalHeading - Inertial.heading();
+  changeHeading -= changeHeading > 0 ? 360 : 0;
+  double origChangeHeading = changeHeading;
+
   Inertial.resetRotation();
   wait(30, msec);
-  kp = 0.125;
-  kd = 10;
-  previousAngleError;
-  angleDerivative;
-  turnV = 1.5;
-  flatTurnValue = 1;
-  angleError = changeHeading - Inertial.rotation(deg);
-  previousAngleError = angleError;
-  while(Inertial.rotation(deg) < changeHeading){
-    angleError = changeHeading - Inertial.rotation(deg);
-    angleDerivative = angleError - previousAngleError;
-    turnV = (angleError*kp) + (angleDerivative * kd) + flatTurnValue;
+
+  double turnVelocity = 1.5;
+  double previousAngleError = Inertial.rotation(deg) - changeHeading;
+
+  while (Inertial.rotation(deg) > changeHeading) {
+    double angleError = Inertial.rotation(deg) - changeHeading;
+    double angleDerivative = angleError - previousAngleError;
     previousAngleError = angleError;
-    if(turnV > 50){turnV = 50;}
 
-    BackLeftDrive.spin(fwd, turnV * 2, pct);
-    FrontLeftDrive.spin(fwd, turnV * 2, pct);
-    BackRightDrive.spin(fwd, -turnV * 2, pct);
-    FrontRightDrive.spin(fwd, -turnV * 2, pct);
-  }
-  */
-  BackLeftDrive.spin(fwd, -20, pct);
-  FrontLeftDrive.spin(fwd, -20, pct);
-  BackRightDrive.spin(fwd, 20, pct);
-  FrontRightDrive.spin(fwd, 20, pct);
+    turnVelocity = (angleError * kP) - (angleDerivative * kD) + flatTurnValue;
+    turnVelocity = clamp(turnVelocity, 15, 25);
 
-  wait(5 / 3 * origChangeHeading, msec);
-
-  BackLeftDrive.stop(coast);
-  BackRightDrive.stop(coast);
-  FrontLeftDrive.stop(coast);
-  FrontRightDrive.stop(coast);
-}
-
-void backLinear(double targetDistance, int minSpeed, double kP) {
-  FrontLeftDrive.resetRotation();
-  FrontRightDrive.resetRotation();
-  double degrees = targetDistance / 0.03599741582;
-  while (FrontLeftDrive.rotation(deg) > degrees) {
-    double inchesLeft =
-        (degrees - FrontLeftDrive.rotation(deg)) * 0.03599741582;
-    double speed = inchesLeft * kP;
-    if (speed > minSpeed) {
-      speed = minSpeed;
-    }
-    FrontLeftDrive.spin(fwd, speed, pct);
-    FrontRightDrive.spin(fwd, speed, pct);
-    BackLeftDrive.spin(fwd, speed, pct);
-    BackRightDrive.spin(fwd, speed, pct);
+    dt::spinInVolts(directionCoeff * turnVelocity * 2 * 12 / 100, dt::E_SIDE_LEFT);
+    dt::spinInVolts(-directionCoeff * turnVelocity * 2 * 12 / 100, dt::E_SIDE_RIGHT);
     wait(10, msec);
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+
+  dt::spinInVolts(directionCoeff * 0.2 * 12.0, dt::E_SIDE_LEFT);
+  dt::spinInVolts(-directionCoeff * 0.2 * 12.0, dt::E_SIDE_RIGHT);
+  wait(fabs(5 / 3 * origChangeHeading), msec);
+  
+  dt::stopAll(coast);
 }
 
-void backCurve(double targetDistance, int minSpeed, double kP, int leftSpeed,
-               int rightSpeed) {
+void backLinear(double targetDistance, double minSpeed, double kP) {
+  constexpr double pctToVoltCoeff = 12.0 / 100.0;
+
+  LeftRotation.resetPosition();
+  double degreesToCompleteMove = tracking::convert::inchesToWheelDegrees(targetDistance);
+  while (RotationLeft.rotation(deg) > degreesToCompleteMove) {
+    double inchesLeftToCompleteMove = 
+              tracking::convert::wheelDegreesToInches(degreesToCompleteMove - RotationLeft.position(deg));
+
+    double speed = inchesLeftToCompleteMove * kP;
+    speed = std::max(speed, minSpeed);
+
+    dt::spinInVolts(speed * pctToVoltCoeff);
+    wait(10, msec);
+  }
+  dt::stopAll();
+}
+
+void backCurve(double targetDistance, int minSpeed, double kP, int leftSpeed, int rightSpeed) {
   FrontLeftDrive.resetRotation();
   FrontRightDrive.resetRotation();
   double degrees = targetDistance / 0.03599741582;

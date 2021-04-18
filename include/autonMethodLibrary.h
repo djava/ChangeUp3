@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include "drivetrain.h"
+#include "trackingWheels.h"
 
 typedef enum turnDirection {
     E_TURN_DIRECTION_LEFT,
@@ -16,10 +17,10 @@ void turnCurve(const double& targetDistance, const double& leftSpeed, const doub
 void testLinearEquation(double targetDistance, int maxSpeed);
 void turnRight(double degrees);
 void turnLeft(double degrees);
-void turnLeft1(double degrees);
+void turn(const autonTurnDirection& direction, const double& degrees);
 void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();
-void goTo(double finalX, double finalY, int turnDirection, double kP, double kD, double minSpeed, double errorMargin);
+void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double kP, double kD, double minSpeed, double errorMargin);
 void backLinear(double targetDistance, int minSpeed, double kP);
 void IgnoreX(double finalX, double finalY, int turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);

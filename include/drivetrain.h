@@ -1,6 +1,6 @@
 #pragma once
 #include "drivetrainConfig.h"
-#include <vex.h>
+#include "vex.h"
 #include <map>
 #include <vector>
 #define _USE_MATH_DEFINES
@@ -36,38 +36,28 @@ namespace drivetrain {
     };
 
     namespace convert {
-        constexpr double drivenWheelRPM = motorRPM * motorToDrivenWheelRatio;
+        constexpr double wheelRPM = motorRPM * motorToWheelRatio;
 
-        constexpr double inchesPerDrivenWheelRotation = drivenWheelSizeInInches * M_PI;
-        constexpr double inchesPerMotorRotation = inchesPerDrivenWheelRotation * motorToWheelRatio;
-        constexpr double inchesPerTrackingWheelRotation = trackingWheelSizeInInches * M_PI;
+        constexpr double inchesPerWheelRotation = wheelSizeInInches * M_PI;
+        constexpr double inchesPerMotorRotation = inchesPerWheelRotation * motorToWheelRatio;
 
-        constexpr double inchesPerDrivenWheelDegree = inchesPerDrivenWheelRotation / 360.0;
+        constexpr double inchesPerWheelDegree = inchesPerWheelRotation / 360.0;
         constexpr double inchesPerMotorDegree = inchesPerMotorRotation / 360.0;
-        constexpr double inchesPerTrackingWheelDegree = inchesPerTrackingWheelRotation / 360.0;
 
         constexpr inline double inchesToDrivenWheelDegrees(const double& inches) {
-            return inches * inchesPerDrivenWheelDegree;
+            return inches * inchesPerWheelDegree;
         }
 
         constexpr inline double inchesToMotorDegrees(const double& inches) {
             return inches * inchesPerMotorDegree;
         }
 
-        constexpr inline double inchesToTrackingWheelDegree(const double& inches) {
-            return inches * inchesPerTrackingWheelDegree;
-        }
-
-        constexpr inline double drivenWheelDegreesToInches(const double& degrees) {
-            return degrees / inchesPerDrivenWheelDegree;
+        constexpr inline double wheelDegreesToInches(const double& degrees) {
+            return degrees / inchesPerWheelDegree;
         }
 
         constexpr inline double motorDegreesToInches(const double& degrees) {
             return degrees / inchesPerMotorDegree;
-        }
-
-        constexpr inline double trackingWheelDegreesToInches(const double& degrees) {
-            return degrees / inchesPerDrivenWheelDegree;
         }
     } // namespace convert
 
@@ -93,7 +83,7 @@ namespace drivetrain {
 
     // No motors specified -> spin all
     void spinInVolts(const double& volts);
-    void spinInVolts(const double& volts, vex::motor motors...);
+    void spinInVolts(const double& volts, const vex::motor& motors...);
     void spinInVolts(const double& volts, const driveMotors& motors...);
     void spinInVolts(const double& volts, const driveSides& sides...);
 } // namespace drivetrain
