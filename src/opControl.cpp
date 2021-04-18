@@ -1,16 +1,16 @@
-#include "vex.h"
 #include "opControl.h"
 
 using namespace vex;
-
+namespace dt = drivetrain;
 int flywheelToggle;
 
 void joystickControl(){
-  FrontRightDrive.spin(fwd, Controller1.Axis2.position(), pct);
-  FrontLeftDrive.spin(fwd, Controller1.Axis3.position(), pct);
-  BackRightDrive.spin(fwd, Controller1.Axis2.position(), pct);
-  BackLeftDrive.spin(fwd, Controller1.Axis3.position(), pct);
-  
+  constexpr valueToVoltCoeff = 12.0 / 127.0;
+
+  const int leftJoystickValue = Controller1.Axis3.value();
+  const int rightJoystickValue = Controller1.Axis2.value();
+  dt::spinInVolts(leftJoystickValue * valueToVoltCoeff, dt::E_SIDE_LEFT);
+  dt::spinInVolts(rightJoystickValue * valueToVoltCoeff, dt::E_SIDE_RIGHT);  
 }
 
 void intakeControl(){
