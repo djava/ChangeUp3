@@ -7,6 +7,11 @@
 #include <sstream>
 #include "drivetrain.h"
 
+typedef enum turnDirection {
+    E_TURN_DIRECTION_LEFT,
+    E_TURN_DIRECTION_RIGHT
+} autonTurnDirection
+
 void turnCurve(const double& targetDistance, const double& leftSpeed, const double& rightSpeed);
 void testLinearEquation(double targetDistance, int maxSpeed);
 void turnRight(double degrees);

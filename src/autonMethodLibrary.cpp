@@ -54,6 +54,8 @@ double heading1;
 // This is a base function always running in the background, it helps provide
 // coordinates for the goTo and turn functions.
 void positionTracking() {
+  constexpr double degToRadCoeff = M_PI * 180.0;
+
   // Starting Position
   globalX = 36.0; 
   globalY = 0.0;
@@ -63,7 +65,7 @@ void positionTracking() {
   while (true) {
     // Add 360 to prevent it going negative, add 90 for degree shift to match the polar coordinate system
     double initialHeadingDeg = fmod(360.0 + 90.0 - Inertial.heading(), 360.0);
-    double initialHeadingRad = initialHeadingDeg * (M_PI / 180.0);
+    double initialHeadingRad = initialHeadingDeg * degToRadCoeff;
     double initialLeftPos = LeftRotation.position(deg);
     double initialRight = RightRotation.position(deg);
     wait(5, msec);
@@ -84,101 +86,74 @@ void positionTracking() {
   }
 }
 
-/*Go to function. This function is used to move the robot to a certain point The
-  robot will turn to face the point and go ther automatically. finalX is the x
-  valie of the point we have to go to. final Y is the same but for the Y
-  coordinate. For now, final heading will always be 361 until I can get a curve
-  function working, turnDirection is the direction we want the robot to turn
-  towards when it turns to face the point we want it to go to. -1 is turn left
-  and 1 is turn right. kP and kD are values used in the PD function to adjust
-  the speed. We usually start with 0.4 and 0.6 and then guess and check until we
-  get the speeds we want. minSpeed is the minimum speed the robot shoud travel
-  at any time, usuallyy set at 15 but can be changed based on circumstances.
+/*Go to function.
+  This function is used to move the robot to a certain point The
+  robot will turn to face the point and go there automatically.
+
+  finalX is the x valie of the point we have to go to.
+  final Y is the same but for the Y coordinate.
+  For now, final heading will always be 360 until I can get a curve function working
+  turnDirection is the direction we want the robot to turn  towards when it turns to face the point we want it to go to.
+  -1 is turn left and 1 is turn right.
+
+  kP and kD are values used in the PD function to adjust the speed. We usually start with 0.4 and 0.6 and then guess and check until we
+  get the speeds we want.
+
+  minSpeed is the minimum speed the robot shoud travel at any time, usually set at 15 but can be changed based on circumstances.
   Error margin is the "accuracy" meter. This tells the function how close is
   good enough. Usually set at about 0.25 inches but again, can be adjusted based
   on circumstances. (Final heading has since been eliminated until I make a
   curve function.)
  */
 
-void goTo(double finalX, double finalY, int turnDirection, double kP, double kD,
-          double minSpeed, double errorMargin) {
-  int sign1;
-  int sign2;
+void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double kP = 0.4,
+          double kD = 0.6, double minSpeed = 15.0, double errorMargin = 0.25) {
+
   double changeX = finalX - globalX;
   double changeY = finalY - globalY;
-  if (changeX < 0) {
-    sign1 = -1;
-  } else if (changeX > 0) {
-    sign1 = 1;
-  }
-  if (changeY < 0) {
-    sign2 = -1;
-  } else if (changeY > 0) {
-    sign2 = 1;
-  }
-  int fsign1 = sign1;
-  int fsign2 = sign2;
+  
   double turnHeading;
-  double error = (sqrt(changeX * changeX + changeY * changeY));
-  double prevError = (sqrt(changeX * changeX + changeY * changeY));
-  double deviationHeading = atan(changeY / changeX) * (180 / M_PI);
-  if (deviationHeading < 0) {
-    deviationHeading = deviationHeading * -1;
+  double deviationHeading = fabs(atan2f(changeY, changeX)) * (180 / M_PI);
+  if (changeY > 0) {
+    turnHeading = changeX > 0 ? deviationHeading : 180 - deviationHeading;
+  } else {
+    turnHeading = changeX > 0 ? 360 - deviationHeading : 180 + deviationHeading;
   }
-  if (changeY > 0 && changeX > 0) {
-    turnHeading = deviationHeading;
-  }
-  if (changeY > 0 && changeX < 0) {
-    turnHeading = 180 - deviationHeading;
-  }
-  if (changeY < 0 && changeX < 0) {
-    turnHeading = 180 + deviationHeading;
-  }
-  if (changeY < 0 && changeX > 0) {
-    turnHeading = 360 - deviationHeading;
-  }
-  if (turnDirection == -1) {
+
+  if (turnDirection == E_TURN_DIRECTION_LEFT) {
     turnLeft(turnHeading);
-  }
-  if (turnDirection == 1) {
+  } else {
     turnRight(turnHeading);
   }
+
+  int signX = changeX < 0 ? -1 : 1;
+  int signY = changeY < 0 ? -1 : 1;
+  int fsignX = signX;
+  int fsignY = signY;
+  double error = sqrt(pow(changeX, 2) + pow(changeY, 2));
+  double prevError = error;
   wait(200, msec);
+  
   double errorDerivative = -1;
-  while (error > errorMargin && sign1 == fsign1 && sign2 == fsign2) {
+  while (error > errorMargin && signX == fsignX && signY == fsignY) {
     changeX = finalX - globalX;
     changeY = finalY - globalY;
-    error = (sqrt(changeX * changeX + changeY * changeY));
+
+    error = sqrt(pow(changeX, 2) + pow(changeY, 2));
     errorDerivative = (error - prevError) / (Brain.timer(msec));
-    Brain.resetTimer();
     prevError = error;
-    double speed = (kP * error) + (kD * errorDerivative);
-    if (speed < 0) {
-      speed = speed * -1;
-    }
-    if (minSpeed > speed) {
-      speed = minSpeed;
-    }
-    FrontLeftDrive.spin(fwd, speed * 12 / 100, volt);
-    BackLeftDrive.spin(fwd, speed * 12 / 100, volt);
-    FrontRightDrive.spin(fwd, speed * 12 / 100, volt);
-    BackRightDrive.spin(fwd, speed * 12 / 100, volt);
+    Brain.resetTimer();
+    
+    double speed = fabs((kP * error) + (kD * errorDerivative));
+    speed = minSpeed > speed ? minSpeed;
+    dt::spinInVolts(speed * 12.0 / 100.0);
     wait(15, msec);
-    if (changeX < 0) {
-      fsign1 = -1;
-    } else if (changeX > 0) {
-      fsign1 = 1;
-    }
-    if (changeY < 0) {
-      fsign2 = -1;
-    } else if (changeY > 0) {
-      fsign2 = 1;
-    }
+  
+    fsignX = changeX < 0 ? -1 : 1;
+    fsignY = changeY < 0 ? -1 : 1;
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+
+  dt::stopAll();
 }
 
 void turnLeft(double degrees) {
