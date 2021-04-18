@@ -13,9 +13,10 @@ void turnCurve(const double& targetDistance, const double& leftSpeed, const &dou
 
   double trackingWheelDegreesToComplete = tracking::convert::inchesToWheelDegrees(targetDistance);
   
-  LeftRotation.resetPosition();
-  while (fabs(LeftRotation.position(deg)) < degrees) {
-    double percentCompleted = 100 * fabs(LeftRotation.position()) / trackingWheelDegreesToComplete;
+  tracking::resetPositions(tracking::E_TRACKING_LEFT);
+  while (fabs(tracking::getAvgPosition()) < degrees) {
+    double percentCompleted =
+              100 * fabs(tracking::getPosition(tracking::E_TRACKING_LEFT)) / trackingWheelDegreesToComplete;
     
     if (percentCompleted <= 3) {
       double lSpeed = clamp(leftSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
@@ -270,11 +271,11 @@ void turn(const autonTurnDirection& direction, const double& degrees) {
 void backLinear(double targetDistance, double minSpeed, double kP) {
   constexpr double pctToVoltCoeff = 12.0 / 100.0;
 
-  LeftRotation.resetPosition();
+  tracking::resetPositions();
   double degreesToCompleteMove = tracking::convert::inchesToWheelDegrees(targetDistance);
-  while (RotationLeft.rotation(deg) > degreesToCompleteMove) {
+  while (tracking::getAvgPosition() > degreesToCompleteMove) {
     double inchesLeftToCompleteMove = 
-              tracking::convert::wheelDegreesToInches(degreesToCompleteMove - RotationLeft.position(deg));
+              tracking::convert::wheelDegreesToInches(degreesToCompleteMove - tracking::getAvgPosition());
 
     double speed = inchesLeftToCompleteMove * kP;
     speed = std::max(speed, minSpeed);
@@ -286,28 +287,23 @@ void backLinear(double targetDistance, double minSpeed, double kP) {
 }
 
 void backCurve(double targetDistance, int minSpeed, double kP, int leftSpeed, int rightSpeed) {
-  FrontLeftDrive.resetRotation();
-  FrontRightDrive.resetRotation();
-  double degrees = targetDistance / 0.03599741582;
-  double factor = rightSpeed / leftSpeed;
-  while (FrontLeftDrive.rotation(deg) > degrees) {
-    double inchesLeft =
-        (degrees - FrontLeftDrive.rotation(deg)) * 0.03599741582;
-    double speed = inchesLeft * kP;
-    if (speed > minSpeed) {
-      speed = minSpeed;
-    }
-    double rSpeed = factor * speed;
-    FrontLeftDrive.spin(fwd, speed, pct);
-    FrontRightDrive.spin(fwd, rSpeed, pct);
-    BackLeftDrive.spin(fwd, speed, pct);
-    BackRightDrive.spin(fwd, rSpeed, pct);
+  tracking::resetPositions();
+  double degreesToCompleteMove = tracking::convert::inchesToWheelDegrees(targetDistance);
+  double curveFactor = rightSpeed / leftSpeed;
+  while (tracking::getPosition(tracking::E_TRACKING_LEFT) > degrees) {
+    double inchesLeftInMove = 
+            tracking::convert::inchesToWheelDegrees(degrees - tracking::getPosition(tracking::E_TRACKING_LEFT));
+
+    double lSpeed = inchesLeftInMove * kP;
+    lSpeed = std::max(lSpeed, minSpeed);
+    
+    double rSpeed = curveFactor * lSpeed;
+
+    dt::spinInVolts(lSpeed, dt::E_SIDE_LEFT);
+    dt::spinInVolts(rSpeed, dt::E_SIDE_RIGHT);
     wait(10, msec);
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+  dt::stopAll();
 }
 
 void IgnoreX(double finalX, double finalY, int turnDirection, double kP,

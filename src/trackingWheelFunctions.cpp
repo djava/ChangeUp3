@@ -20,17 +20,17 @@ namespace trackingWheels {
     }
 
     double getPosition(const trackingWheels& wheel) {
-        return wheelEnumToRotationSensors[i].position();
+        return wheelEnumToRotationSensors[i].position(vex::deg);
     }
 
     double getPosition(const vex::rotation& sensor) {
-        return sensor.position();
+        return sensor.position(vex::deg);
     }
 
     double getAvgPosition(void) {
         double total = 0;
         for (auto& i: allRotationSensors) {
-            total += i.position();
+            total += i.position(vex::deg);
         }
 
         return total / allRotationSensors.size();
@@ -41,7 +41,7 @@ namespace trackingWheels {
 
         double total = 0;
         for (auto& i: {wheels...}) {
-            total += wheelEnumToRotationSensor[i].position();
+            total += wheelEnumToRotationSensor[i].position(vex::deg);
         }
 
         return total / numOfWheels;
@@ -52,7 +52,7 @@ namespace trackingWheels {
 
         double total = 0;
         for (auto& i: {sensors...}) {
-            total += i.position();
+            total += i.position(vex::deg);
         }
         
         return total / numOfSensors;
