@@ -26,7 +26,7 @@
 
 #include "vex.h"
 #include "opControl.h"
-#include "Autonomous.h"
+#include "autonomous.h"
 #include "autonMethodLibrary.h"
 
 using namespace vex;
