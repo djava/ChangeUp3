@@ -3,21 +3,18 @@
 using namespace vex;
 namespace dt = drivetrain;
 
-double globalX;
-double globalY;
-double heading1;
 
 // Make a curve towards an object. We will input how far the curve will last,
 // and the speed of the left side and right side
-void turnCurve(double targetDistance, double leftSpeed, double rightSpeed) {
+void turnCurve(const double& targetDistance, const double& leftSpeed, const &double rightSpeed) {
   constexpr double lowerPowerLimit = 15.0;
   constexpr double pctToVoltsCoeff = 12.0;
 
   double drivenWheelDegreesToComplete = dt::convert::inchesToDrivenWheelDegrees(targetDistance);
-  dt::resetIMEs();
-  while (fabs(FrontLeftDrive.rotation(deg)) < degrees) {
-    // % of movement completed
-    double percentCompleted = 100 * fabs(FrontLeftDrive.rotation(deg)) / drivenWheelDegreesToComplete;
+  
+  LeftRotation.resetPosition();
+  while (fabs(LeftRotation.position(deg)) < degrees) {
+    double percentCompleted = 100 * fabs(FrontLeftDrive.angle()) / drivenWheelDegreesToComplete;
     
     if (percentCompleted <= 3) {
       double lSpeed = clamp(leftSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
@@ -50,105 +47,40 @@ void turnCurve(double targetDistance, double leftSpeed, double rightSpeed) {
   dt::stopAll();
 }
 
-// This is so we can go backwards a certain distance will outtaking balls. This
-// will be used when backing away from a goal with balls of the opposing
-// alliance in our bot. This gets rid of them while backing up
-void dropLinearEquation(double targetDistance, int maxSpeed) {
-  double degrees = dt::convert::inchesToDrivenWheelDegrees(targetDistance);
-  dt::resetIMEs();
-  while (fabs(FrontLeftDrive.rotation(deg)) < degrees) {
-    float percentTracker = fabs(FrontLeftDrive.rotation(deg)) / degrees;
-    if (percentTracker < 0.03) {
-      int speed = maxSpeed * 3.33 * 0.03;
-      if (speed < 15 && maxSpeed > 0) {
-        speed = 15;
-      } else if (speed > -15 && maxSpeed < 0) {
-        speed = -15;
-      }
-      FrontLeftDrive.spin(fwd, speed, pct);
-      FrontRightDrive.spin(fwd, speed, pct);
-      BackLeftDrive.spin(fwd, speed, pct);
-      BackRightDrive.spin(fwd, speed, pct);
-    } else if (percentTracker <= 0.30 && percentTracker >= 0.03) {
-      int speed = percentTracker * maxSpeed * 3.33;
-      if (speed <= 15 && maxSpeed > 0) {
-        speed = 15;
-      } else if (speed > -15 && maxSpeed < 0) {
-        speed = -15;
-      }
-      FrontLeftDrive.spin(fwd, speed, pct);
-      FrontRightDrive.spin(fwd, speed, pct);
-      BackLeftDrive.spin(fwd, speed, pct);
-      BackRightDrive.spin(fwd, speed, pct);
-    } else if (percentTracker > 0.30 && percentTracker < 0.70) {
-      int speed = maxSpeed;
-      FrontLeftDrive.spin(fwd, speed, pct);
-      FrontRightDrive.spin(fwd, speed, pct);
-      BackLeftDrive.spin(fwd, speed, pct);
-      BackRightDrive.spin(fwd, speed, pct);
-      Indexer.spin(reverse, 100, pct);
-      LeftIntake.spin(reverse, 100, pct);
-      RightIntake.spin(reverse, 100, pct);
-    } else if (percentTracker >= 0.70) {
-      int speed = (maxSpeed - (percentTracker * maxSpeed)) * 3.33;
-      if (speed <= maxSpeed * 3 / 16 && maxSpeed > 0) {
-        speed = maxSpeed * 3 / 16;
-      } else if (speed >= maxSpeed * 3 / 16 && maxSpeed < 0) {
-        speed = maxSpeed * 3 / 16;
-      }
-      if (speed < 15 && maxSpeed > 0) {
-        speed = 15;
-      } else if (speed > -15 && maxSpeed < 0) {
-        speed = -15;
-      }
-      FrontLeftDrive.spin(fwd, speed, pct);
-      FrontRightDrive.spin(fwd, speed, pct);
-      BackLeftDrive.spin(fwd, speed, pct);
-      BackRightDrive.spin(fwd, speed, pct);
-      Indexer.spin(reverse, 100, pct);
-      LeftIntake.spin(reverse, 100, pct);
-      RightIntake.spin(reverse, 100, pct);
-    }
-  }
-  dt::stopAll();
-  Indexer.stop(brake);
-  RightIntake.stop(brake);
-  LeftIntake.stop(brake);
-}
+double globalX;
+double globalY;
+double heading1;
 
 // This is a base function always running in the background, it helps provide
 // coordinates for the goTo and turn functions.
 void positionTracking() {
-  globalX = 36;
-  globalY = 0;
+  // Starting Position
+  globalX = 36.0; 
+  globalY = 0.0;
+
   LeftRotation.resetPosition();
   RightRotation.resetPosition();
   while (true) {
-    double initialHeading = (450 - (int)Inertial.heading()) % 360;
-    double initialRadian = initialHeading * (M_PI / 180);
-    double initialX = globalX;
-    double initialY = globalY;
-    double initialLeft = LeftRotation.position(deg);
+    // Add 360 to prevent it going negative, add 90 for degree shift to match the polar coordinate system
+    double initialHeadingDeg = fmod(360.0 + 90.0 - Inertial.heading(), 360.0);
+    double initialHeadingRad = initialHeadingDeg * (M_PI / 180.0);
+    double initialLeftPos = LeftRotation.position(deg);
     double initialRight = RightRotation.position(deg);
     wait(5, msec);
-    double leftChange =
-        (LeftRotation.position(deg) - initialLeft) * 0.02399827721;
-    double rightChange =
-        (RightRotation.position(deg) - initialRight) * 0.02399827721;
+
+    double leftChange = (LeftRotation.position(deg) - initialLeft) * dt::trackingWheelSizeInInches * M_PI / 360.0;
+    double rightChange = (RightRotation.position(deg) - initialRight) * dt::trackingWheelSizeInInches * M_PI / 360.0;
     double movement = (leftChange + rightChange) / 2;
-    double changeX = (cos(initialRadian)) * movement;
-    double changeY = (sin(initialRadian)) * movement;
-    globalX = initialX + changeX;
-    globalY = initialY + changeY;
-    heading1 = initialHeading;
+
+    globalX += cos(initialHeadingRad) * movement;
+    globalY += sin(initialHeadingRad) * movement;
+    heading1 = initialHeadingDeg;
+
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print("X: ");
-    Brain.Screen.print(globalX);
-    Brain.Screen.print("     Y: ");
-    Brain.Screen.print(globalY);
-    Brain.Screen.print("     H: ");
-    Brain.Screen.print(initialHeading);
+    std::stringstream odomDebugLine;
+    odomDebugLine << "X: " << globalX << "     Y: " << globalY << "     H: " << initialHeadingDeg;
+    Brain.Screen.print(odomDebugLine.str().c_str());
   }
 }
 

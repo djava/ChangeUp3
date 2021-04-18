@@ -3,12 +3,14 @@
 #include <utility>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <string>
+#include <sstream>
 #include "drivetrain.h"
 
+void turnCurve(const double& targetDistance, const double& leftSpeed, const double& rightSpeed);
 void testLinearEquation(double targetDistance, int maxSpeed);
 void turnRight(double degrees);
 void turnLeft(double degrees);
-void turnCurve(double targetDistance, double leftSpeed, double rightSpeed);
 void turnLeft1(double degrees);
 void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();
