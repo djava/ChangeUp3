@@ -18,4 +18,8 @@ void IgnoreX(double finalX, double finalY, int turnDirection, double kP, double 
               double minSpeed, double errorMargin);
 void IgnoreY(double finalX, double finalY, int turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);
-void resetDriveRotation(void);
+
+template <typename T>
+T clamp(const T& num, const T& lower, const T& upper) {
+    return std::max(lower, std::min(num, upper));
+}

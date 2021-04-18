@@ -1,6 +1,7 @@
 #include "autonMethodLibrary.h"
 
 using namespace vex;
+namespace dt = drivetrain;
 
 double globalX;
 double globalY;
@@ -9,90 +10,52 @@ double heading1;
 // Make a curve towards an object. We will input how far the curve will last,
 // and the speed of the left side and right side
 void turnCurve(double targetDistance, double leftSpeed, double rightSpeed) {
-  double degrees = targetDistance / 0.053;
-  resetDriveRotation();
+  constexpr double lowerPowerLimit = 15.0;
+  constexpr double pctToVoltsCoeff = 12.0;
+
+  double drivenWheelDegreesToComplete = dt::convert::inchesToDrivenWheelDegrees(targetDistance);
+  dt::resetIMEs();
   while (fabs(FrontLeftDrive.rotation(deg)) < degrees) {
-    double percentTracker = fabs(FrontLeftDrive.rotation(deg)) / degrees;
-    if (percentTracker < 0.03) {
-      int lSpeed = leftSpeed * 3.33 * 0.03;
-      if (lSpeed < 15 && leftSpeed > 0) {
-        lSpeed = 15;
-      } else if (lSpeed > -15 && leftSpeed < 0) {
-        lSpeed = -15;
-      }
-      int rSpeed = rightSpeed * 3.33 * 0.03;
-      if (rSpeed < 15 && rightSpeed > 0) {
-        rSpeed = 15;
-      } else if (rSpeed > -15 && rightSpeed < 0) {
-        rSpeed = -15;
-      }
-      FrontLeftDrive.spin(fwd, lSpeed * 12 / 25, volt);
-      FrontRightDrive.spin(fwd, lSpeed * 12 / 25, volt);
-      BackLeftDrive.spin(fwd, rSpeed * 12 / 25, volt);
-      BackRightDrive.spin(fwd, rSpeed * 12 / 25, volt);
-    } else if (percentTracker <= 0.30 && percentTracker >= 0.03) {
-      int lSpeed = leftSpeed * 3.33 * percentTracker;
-      if (lSpeed < 15 && leftSpeed > 0) {
-        lSpeed = 15;
-      } else if (lSpeed > -15 && leftSpeed < 0) {
-        lSpeed = -15;
-      }
-      int rSpeed = rightSpeed * 3.33 * percentTracker;
-      if (rSpeed < 15 && rightSpeed > 0) {
-        rSpeed = 15;
-      } else if (rSpeed > -15 && rightSpeed < 0) {
-        rSpeed = -15;
-      }
-      FrontLeftDrive.spin(fwd, lSpeed * 12 / 75, volt);
-      FrontRightDrive.spin(fwd, lSpeed * 12 / 75, volt);
-      BackLeftDrive.spin(fwd, rSpeed * 12 / 75, volt);
-      BackRightDrive.spin(fwd, rSpeed * 12 / 75, volt);
-    } else if (percentTracker > 0.30 && percentTracker < 0.70) {
-      FrontLeftDrive.spin(fwd, leftSpeed * 12 / 100, volt);
-      FrontRightDrive.spin(fwd, rightSpeed * 12 / 100, volt);
-      BackLeftDrive.spin(fwd, leftSpeed * 12 / 100, volt);
-      BackRightDrive.spin(fwd, rightSpeed * 12 / 100, volt);
-    } else if (percentTracker >= 0.70) {
-      int lSpeed = (leftSpeed - (percentTracker * leftSpeed)) * 3.33;
-      if (lSpeed <= leftSpeed * 3 / 16 && leftSpeed > 0) {
-        lSpeed = leftSpeed * 3 / 16;
-      } else if (lSpeed >= leftSpeed * 3 / 16 && leftSpeed < 0) {
-        lSpeed = leftSpeed * 3 / 16;
-      }
-      if (lSpeed < 15 && leftSpeed > 0) {
-        lSpeed = 15;
-      } else if (lSpeed > -15 && leftSpeed < 0) {
-        lSpeed = -15;
-      }
-      int rSpeed = (rightSpeed - (percentTracker * rightSpeed)) * 3.33;
-      if (rSpeed <= rightSpeed * 3 / 16 && rightSpeed > 0) {
-        rSpeed = rightSpeed * 3 / 16;
-      } else if (rSpeed >= rightSpeed * 3 / 16 && rightSpeed < 0) {
-        rSpeed = rightSpeed * 3 / 16;
-      }
-      if (rSpeed < 15 && rightSpeed > 0) {
-        rSpeed = 15;
-      } else if (rSpeed > -15 && rightSpeed < 0) {
-        rSpeed = -15;
-      }
-      FrontLeftDrive.spin(fwd, lSpeed * 12 / 50, volt);
-      FrontRightDrive.spin(fwd, rSpeed * 12 / 50, volt);
-      BackLeftDrive.spin(fwd, lSpeed * 12 / 50, volt);
-      BackRightDrive.spin(fwd, rSpeed * 12 / 50, volt);
+    // % of movement completed
+    double percentCompleted = 100 * fabs(FrontLeftDrive.rotation(deg)) / drivenWheelDegreesToComplete;
+    
+    if (percentCompleted <= 3) {
+      double lSpeed = clamp(leftSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
+      double rSpeed = clamp(rightSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
+      dt::spinInVolts(lSpeed / 25.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
+      dt::spinInVolts(rSpeed / 25.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+
+    } else if (percentCompleted <= 30) {
+      double lSpeed = clamp(leftSpeed * 3.33 * percentCompleted, -lowerPowerLimit, lowerPowerLimit);
+      double rSpeed = clamp(rightSpeed * 3.33 * percentCompleted, -lowerPowerLimit, lowerPowerLimit);
+      dt::spinInVolts(lSpeed / 75.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
+      dt::spinInVolts(rSpeed / 75.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+
+    } else if (percentCompleted <= 70) {
+      dt::spinInVolts(leftSpeed / 100.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
+      dt::spinInVolts(rightSpeed / 100.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+
+    } else {
+      int lSpeed = (leftSpeed * (100 - percentCompleted)) * 0.0333;
+      lSpeed = clamp(lSpeed, std::min(-lowerPowerLimit, -leftSpeed * 3.0 / 16.0), 
+                             std::max(lowerPowerLimit, leftSpeed * 3.0 / 16));
+      int rSpeed = (rightSpeed * (100 - percentCompleted)) * 0.0333;
+      rSpeed = clamp(rSpeed, std::min(-lowerPowerLimit, -rightSpeed * 3.0 / 16.0), 
+                             std::max(lowerPowerLimit, rightSpeed * 3.0 / 16));
+
+      dt::spinInVolts(lspeed / 50.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
+      dt::spinInVolts(rSpeed / 50.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
     }
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+  dt::stopAll();
 }
 
 // This is so we can go backwards a certain distance will outtaking balls. This
 // will be used when backing away from a goal with balls of the opposing
 // alliance in our bot. This gets rid of them while backing up
 void dropLinearEquation(double targetDistance, int maxSpeed) {
-  double degrees = targetDistance / 0.053;
-  resetDriveRotation();
+  double degrees = dt::convert::inchesToDrivenWheelDegrees(targetDistance);
+  dt::resetIMEs();
   while (fabs(FrontLeftDrive.rotation(deg)) < degrees) {
     float percentTracker = fabs(FrontLeftDrive.rotation(deg)) / degrees;
     if (percentTracker < 0.03) {
@@ -147,10 +110,7 @@ void dropLinearEquation(double targetDistance, int maxSpeed) {
       RightIntake.spin(reverse, 100, pct);
     }
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+  dt::stopAll();
   Indexer.stop(brake);
   RightIntake.stop(brake);
   LeftIntake.stop(brake);
@@ -632,11 +592,4 @@ void IgnoreY(double finalX, double finalY, int turnDirection, double kP,
   FrontRightDrive.stop(brake);
   BackLeftDrive.stop(brake);
   BackRightDrive.stop(brake);
-}
-
-void resetDriveRotation() {
-  FrontLeftDrive.resetRotation();
-  BackLeftDrive.resetRotation();
-  FrontRightDrive.resetRotation();
-  BackRightDrive.resetRotation();
 }
