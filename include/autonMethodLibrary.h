@@ -22,7 +22,7 @@ void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();
 void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double kP, double kD, double minSpeed, double errorMargin);
 void backLinear(double targetDistance, int minSpeed, double kP);
-void IgnoreX(double finalX, double finalY, int turnDirection, double kP, double kD, 
+void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);
 void IgnoreY(double finalX, double finalY, int turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);

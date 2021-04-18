@@ -306,140 +306,84 @@ void backCurve(double targetDistance, int minSpeed, double kP, int leftSpeed, in
   dt::stopAll();
 }
 
-void IgnoreX(double finalX, double finalY, int turnDirection, double kP,
+void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP,
              double kD, double minSpeed, double errorMargin) {
-  int sign2;
+  constexpr double radToDegCoeff = 180.0 / M_PI;
+  constexpr double pctToVoltCoeff = 12.0 / 100.0;
+
   double changeX = finalX - globalX;
   double changeY = finalY - globalY;
-  if (changeY < 0) {
-    sign2 = -1;
-  } else if (changeY > 0) {
-    sign2 = 1;
-  }
-  int fsign2 = sign2;
+  bool isInitialChangeYNegative = changeY < 0;
+
+  double deviationHeading = fabs(atan2f(changeY, changeX)) * radToDegCoeff;
   double turnHeading;
-  double error = (sqrt(changeX * changeX + changeY * changeY));
-  double prevError = (sqrt(changeX * changeX + changeY * changeY));
-  double deviationHeading = atan(changeY / changeX) * (180 / M_PI);
-  if (deviationHeading < 0) {
-    deviationHeading = deviationHeading * -1;
+  if (isInitialChangeYNegative) {
+    turnHeading = changeX > 0 ? deviationHeading : 180 - deviationHeading;
+  } else {
+    turnHeading = changeX > 0 ? 180 + deviationHeading : 360 - deviationHeading;
   }
-  if (changeY > 0 && changeX > 0) {
-    turnHeading = deviationHeading;
-  }
-  if (changeY > 0 && changeX < 0) {
-    turnHeading = 180 - deviationHeading;
-  }
-  if (changeY < 0 && changeX < 0) {
-    turnHeading = 180 + deviationHeading;
-  }
-  if (changeY < 0 && changeX > 0) {
-    turnHeading = 360 - deviationHeading;
-  }
-  if (turnDirection == -1) {
-    turnLeft(turnHeading);
-  }
-  if (turnDirection == 1) {
-    turnRight(turnHeading);
-  }
+
+  turn(autonTurnDirection, turnHeading);
   wait(350, msec);
+  
+  double error = sqrt(pow(changeX, 2) + pow(changeY, 2));
+  double prevError = error;
   double errorDerivative = -1;
-  while (error > errorMargin && sign2 == fsign2) {
+  while (error > errorMargin && isInitialChangeYNegative == (changeY < 0)) {
     changeX = finalX - globalX;
     changeY = finalY - globalY;
-    error = (sqrt(changeX * changeX + changeY * changeY));
+
+    error = (sqrt(pow(changeX, 2) + pow(changeY, 2)));
     errorDerivative = (error - prevError) / (Brain.timer(msec));
-    Brain.resetTimer();
     prevError = error;
-    double speed = (kP * error) + (kD * errorDerivative);
-    if (speed < 0) {
-      speed = speed * -1;
-    }
-    if (minSpeed > speed) {
-      speed = minSpeed;
-    }
-    FrontLeftDrive.spin(fwd, speed, pct);
-    BackLeftDrive.spin(fwd, speed, pct);
-    FrontRightDrive.spin(fwd, speed, pct);
-    BackRightDrive.spin(fwd, speed, pct);
+    Brain.resetTimer();
+
+    double speed = fabs((kP * error) + (kD * errorDerivative));
+    speed = std::max(minSpeed, speed);
+
+    dt::spinInVolts(speed * pctToVoltCoeff);
     wait(10, msec);
-    if (changeY < 0) {
-      fsign2 = -1;
-    } else if (changeY > 0) {
-      fsign2 = 1;
-    }
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+  dt::stopAll()
 }
 
 void IgnoreY(double finalX, double finalY, int turnDirection, double kP,
              double kD, double minSpeed, double errorMargin) {
-  int sign1;
+  constexpr double radToDegCoeff = 180.0 / M_PI;
+  constexpr double pctToVoltCoeff = 12.0 / 100.0;
+
   double changeX = finalX - globalX;
   double changeY = finalY - globalY;
-  if (changeX < 0) {
-    sign1 = -1;
-  } else if (changeX > 0) {
-    sign1 = 1;
-  }
-  int fsign1 = sign1;
+  bool isInitialChangeXNegative = changeX < 0;
+
+  double deviationHeading = fabs(atan2f(changeY, changeX)) * radToDegCoeff;
   double turnHeading;
-  double error = (sqrt(changeX * changeX + changeY * changeY));
-  double prevError = (sqrt(changeX * changeX + changeY * changeY));
-  double deviationHeading = atan(changeY / changeX) * (180 / M_PI);
-  if (deviationHeading < 0) {
-    deviationHeading = deviationHeading * -1;
+  if (isInitialChangeYNegative) {
+    turnHeading = changeX > 0 ? deviationHeading : 180 - deviationHeading;
+  } else {
+    turnHeading = changeX > 0 ? 180 + deviationHeading : 360 - deviationHeading;
   }
-  if (changeY > 0 && changeX > 0) {
-    turnHeading = deviationHeading;
-  }
-  if (changeY > 0 && changeX < 0) {
-    turnHeading = 180 - deviationHeading;
-  }
-  if (changeY < 0 && changeX < 0) {
-    turnHeading = 180 + deviationHeading;
-  }
-  if (changeY < 0 && changeX > 0) {
-    turnHeading = 360 - deviationHeading;
-  }
-  if (turnDirection == -1) {
-    turnLeft(turnHeading);
-  }
-  if (turnDirection == 1) {
-    turnRight(turnHeading);
-  }
+
+  turn(autonTurnDirection, turnHeading);
   wait(350, msec);
+  
+  double error = sqrt(pow(changeX, 2) + pow(changeY, 2));
+  double prevError = error;
   double errorDerivative = -1;
-  while (error > errorMargin && sign1 == fsign1) {
+  while (error > errorMargin && isInitialChangeXNegative == (changeX < 0)) {
     changeX = finalX - globalX;
     changeY = finalY - globalY;
-    error = (sqrt(changeX * changeX + changeY * changeY));
+
+    error = (sqrt(pow(changeX, 2) + pow(changeY, 2)));
     errorDerivative = (error - prevError) / (Brain.timer(msec));
-    Brain.resetTimer();
     prevError = error;
-    double speed = (kP * error) + (kD * errorDerivative);
-    if (speed < 0) {
-      speed = speed * -1;
-    }
-    if (minSpeed > speed) {
-      speed = minSpeed;
-    }
-    FrontLeftDrive.spin(fwd, speed, pct);
-    BackLeftDrive.spin(fwd, speed, pct);
-    FrontRightDrive.spin(fwd, speed, pct);
-    BackRightDrive.spin(fwd, speed, pct);
+    Brain.resetTimer();
+
+    double speed = fabs((kP * error) + (kD * errorDerivative));
+    speed = std::max(minSpeed, speed);
+
+    dt::spinInVolts(speed * pctToVoltCoeff);
     wait(10, msec);
-    if (changeX < 0) {
-      fsign1 = -1;
-    } else if (changeX > 0) {
-      fsign1 = 1;
-    }
   }
-  FrontLeftDrive.stop(brake);
-  FrontRightDrive.stop(brake);
-  BackLeftDrive.stop(brake);
-  BackRightDrive.stop(brake);
+  dt::stopAll()
 }
