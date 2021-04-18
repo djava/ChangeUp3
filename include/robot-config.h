@@ -15,6 +15,8 @@ extern motor LeftIntake;
 extern motor RightIntake;
 extern rotation LeftRotation;
 extern rotation RightRotation;
+extern line LineSensor;
+extern limit Limit;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
@@ -22,5 +24,3 @@ extern rotation RightRotation;
  * This should be called at the start of your int main function.
  */
 void  vexcodeInit( void );
-
-
