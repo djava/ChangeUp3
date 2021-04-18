@@ -8,7 +8,7 @@ extern motor BackLeftDrive;
 extern motor BackRightDrive;
 extern motor FrontLeftDrive;
 extern motor FrontRightDrive;
-extern motor Sorter;
+extern motor Shooter;
 extern motor Indexer;
 extern inertial Inertial;
 extern motor LeftIntake;

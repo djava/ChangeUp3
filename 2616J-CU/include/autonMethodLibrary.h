@@ -15,8 +15,6 @@ typedef enum turnDirection {
 
 void turnCurve(const double& targetDistance, const double& leftSpeed, const double& rightSpeed);
 void testLinearEquation(double targetDistance, int maxSpeed);
-void turnRight(double degrees);
-void turnLeft(double degrees);
 void turn(const autonTurnDirection& direction, const double& degrees);
 void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();

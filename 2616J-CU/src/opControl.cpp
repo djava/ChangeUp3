@@ -44,41 +44,36 @@ void indexerControl() {
   }
 }
 
-void sorterControl() {
+void shooterControl() {
   // Outtake
   if (Controller1.ButtonR2.pressing()) {
     LeftIntake.spin(reverse, 100, pct);
     RightIntake.spin(reverse, 100, pct);
     Indexer.spin(reverse, 100, pct);
-    Sorter.stop(hold);
+    Shooter.stop(hold);
   }
 
   // Middle Goal Dump
   if (Controller1.ButtonL2.pressing()) {
-    Sorter.spin(fwd, 13, volt);
+    Shooter.spin(fwd, 13, volt);
     wait(100, msec);
     while (Controller1.ButtonL2.pressing()) {
-      Sorter.spin(fwd, 13, volt);
+      Shooter.spin(fwd, 13, volt);
       Indexer.spin(fwd, 100, pct);
       intakeControl();
       joystickControl();
     }
-    // BackLeftDrive.spin(fwd, 15, pct);
-    // BackRightDrive.spin(fwd, 15, pct);
-    // FrontLeftDrive.spin(fwd, 15, pct);
-    // FrontRightDrive.spin(fwd, 15, pct);
-
   }
   // Poop
   else if (Controller1.ButtonY.pressing()) {
-    Sorter.spin(fwd, -100, pct);
+    Shooter.spin(fwd, -100, pct);
     if (Controller1.ButtonL1.pressing() == false) {
       Indexer.stop(brake);
     }
   }
 
   else {
-    Sorter.stop(hold);
+    Shooter.stop(hold);
   }
 }
 
@@ -86,19 +81,19 @@ void screenControl() {
   if (Controller1.ButtonX.pressing()) {
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("I: ");
-    Controller1.Screen.print(Indexer.temperature(celsius));
-    Controller1.Screen.print("   BL: ");
-    Controller1.Screen.print(BackLeftDrive.temperature(celsius));
+
+    std::stringstream firstLine;
+    firstLine << "I: " << Indexer.temperature(celsius) << "   BL: " << BackLeftDrive.temperature(celsius);
+    Controller1.Screen.print(firstLine.str().c_str());
     Controller1.Screen.newLine();
-    Controller1.Screen.print("S: ");
-    Controller1.Screen.print(Sorter.temperature(celsius));
-    Controller1.Screen.print("  BR: ");
-    Controller1.Screen.print(BackRightDrive.temperature(celsius));
+
+    std::stringstream secondLine;
+    secondLine << "S: " << Shooter.temperature(celsius) << "  BR: " << BackRightDrive.temperature(celsius);
+    Controller1.Screen.print(secondLine.str().c_str());
     Controller1.Screen.newLine();
-    Controller1.Screen.print("B: ");
-    Controller1.Screen.print(Brain.Battery.capacity(pct));
-    Controller1.Screen.print("      RI: ");
-    Controller1.Screen.print(RightIntake.temperature(celsius));
+
+    std::stringstream thirdLine;
+    thirdLine << "B: " << Brain.Battery.capacity(pct) << "      RI: " << RightIntake.temperature(celsius);
+    Controller1.Screen.print(thirdLine.str().c_str());
   }
 }

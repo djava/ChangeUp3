@@ -1,5 +1,7 @@
-#ifndef AUTONOMOUS_H
-#define AUTONOMOUS_H
+#pragma once
+#include "vex.h"
+#include "drivetrain.h"
+#include "autonMethodLibrary.h"
 
 void leftAndCenter();
 void Right();
@@ -14,5 +16,3 @@ void Side();
 void Center();
 void OrcahBlue();
 void OrcahRed();
-
-#endif

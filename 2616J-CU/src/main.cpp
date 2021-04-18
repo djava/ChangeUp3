@@ -15,7 +15,7 @@
 // BackRightDrive       motor         4               
 // FrontLeftDrive       motor         11              
 // FrontRightDrive      motor         20              
-// Sorter               motor         8               
+// Shooter               motor         8               
 // Indexer              motor         15              
 // Inertial             inertial      2               
 // LeftIntake           motor         3               
@@ -67,7 +67,7 @@ void usercontrol(void) {
     joystickControl();
     intakeControl();
     indexerControl();
-    sorterControl();
+    shooterControl();
     screenControl();
 
     // goalAlign();

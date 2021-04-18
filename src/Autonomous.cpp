@@ -11,9 +11,9 @@ void leftAndCenter(){
   goTo(-13, -18.2, 1, 2.2, 60, 25, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(300, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   wait(200, msec);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -30,9 +30,9 @@ void leftAndCenter(){
   RightIntake.stop(brake);
   goTo(19.5, 37.5, 1, 2, 100, 25, 0.5);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(600, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   backLinear(-15, -25, 3);
   Indexer.stop(brake);
 }
@@ -47,11 +47,11 @@ void Left(){
   goTo(18.75, -12, 1, 2.1, 60, 55, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(200, msec);
   Indexer.stop(brake);
   wait(250, msec);
-  Sorter.spin(reverse, 25, pct);
+  Shooter.spin(reverse, 25, pct);
   Indexer.spin(fwd, 100, pct);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -68,11 +68,11 @@ void leftAndMiddle(){
   goTo(18.75, -12, 1, 2.1, 60, 55, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(200, msec);
   Indexer.stop(brake);
   wait(250, msec);
-  Sorter.spin(reverse, 25, pct);
+  Shooter.spin(reverse, 25, pct);
   Indexer.spin(fwd, 100, pct);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -80,10 +80,10 @@ void leftAndMiddle(){
   Indexer.stop(brake);
   IgnoreX(91.75, 8.25, -1, 2.2, 60, 60, 0.5);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(600, msec);
   Indexer.stop(brake);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   backLinear(-12, -30, 3);
 }
 
@@ -98,9 +98,9 @@ void rightAndMiddle(){
   goTo(12.15, -22, -1, 1.3, 60, 25, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(300, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   wait(300, msec);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -109,7 +109,7 @@ void rightAndMiddle(){
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
   goTo(-28, 5, 1, 3, 60, 25, 0.5);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(350, msec);
   backLinear(-15, -25, 5);
 }
@@ -125,9 +125,9 @@ void Right(){
   goTo(12.15, -22, -1, 1.3, 60, 25, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(300, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   wait(100, msec);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -150,11 +150,11 @@ void progSkills(){
   // 11, 4.5
   goTo(3.5, 7, -1, 2.3, 60, 35, 0.5);
   //decrease y
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(200, msec);
   Indexer.stop(brake);
   wait(700, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   Indexer.spin(fwd, 100, pct);
 
   //2nd
@@ -169,11 +169,11 @@ void progSkills(){
   IgnoreY(13.5, 58.5, -1, 2.1, 60, 35, 0.5);
   Indexer.spin(fwd, 100, pct);
   //increase y
-  Sorter.spin(fwd, 13, volt);
+  Shooter.spin(fwd, 13, volt);
   wait(300, msec);
   Indexer.stop(brake);
   wait(400, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   Indexer.spin(fwd, 100, pct);
 
   //3rd
@@ -187,11 +187,11 @@ void progSkills(){
   RightIntake.stop(brake);
   IgnoreY(15.75, 160, -1, 1.8, 60, 35, 0.5);
   //lower x
-  Sorter.spin(fwd, 13, volt);
+  Shooter.spin(fwd, 13, volt);
   wait(300, msec);
   Indexer.stop(brake);
   wait(400, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
 
   
   //4th
@@ -206,9 +206,9 @@ void progSkills(){
   Indexer.stop(brake);
   IgnoreX(67, 116.5, -1, 2.1, 60, 35, 0.5);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 13, volt);
+  Shooter.spin(fwd, 13, volt);
   wait(600, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
 
 
   //5th
@@ -223,9 +223,9 @@ void progSkills(){
 
   goTo(128, 124, -1, 2.1, 60, 35, 0.5);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 13, volt);
+  Shooter.spin(fwd, 13, volt);
   wait(600, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
 
   /*
   // 6th
@@ -279,7 +279,7 @@ void progSkills(){
   RightIntake.stop(coast);
   wait(100, msec);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   */
 
 
@@ -301,11 +301,11 @@ void homeRow(){
   goTo(18.75, -12, 1, 2.1, 60, 55, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(200, msec);
   Indexer.stop(brake);
   wait(250, msec);
-  Sorter.spin(reverse, 25, pct);
+  Shooter.spin(reverse, 25, pct);
   Indexer.spin(fwd, 100, pct);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -313,10 +313,10 @@ void homeRow(){
   Indexer.stop(brake);
   IgnoreX(91.75, 8.25, -1, 2.2, 60, 60, 0.5);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(600, msec);
   Indexer.stop(brake);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   backLinear(-12, -30, 3);
   LeftIntake.spin(fwd, 100, pct);
   RightIntake.spin(fwd, 100, pct);
@@ -324,7 +324,7 @@ void homeRow(){
   IgnoreY(145.25, -8, -1, 2, 60, 45, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(500, msec);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
@@ -341,9 +341,9 @@ void homeRow(){
   goTo(-12.5, -17.5, 1, 2.2, 60, 25, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(300, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   wait(200, msec);
 
   LeftIntake.spin(reverse, 100, pct);
@@ -353,7 +353,7 @@ void homeRow(){
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
   goTo(26.6, 6, -1, 3.2, 60, 25, 0.5);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(450, msec);
 
   backLinear(-15, -25, 5);
@@ -361,16 +361,16 @@ void homeRow(){
   LeftIntake.spin(fwd, 100, pct);
   RightIntake.spin(fwd, 100, pct);
   Indexer.spin(fwd, 100, pct);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   goTo(87, 3, 1, 3.2, 100, 28, 0.5);
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
   wait(700, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   backLinear(-15, -25, 3);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(350, msec);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   wait(100, msec);
   */
 }
@@ -400,20 +400,20 @@ void OrcahBlue(){
   LeftIntake.stop(brake);
   RightIntake.stop(brake);
   Indexer.spin(fwd, 13, volt);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(400, msec);
   Indexer.stop(brake);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
   turnCurve(52, -50, -85);
   
   IgnoreX(67, -0.5, -1, 2.2, 60, 60, 0.5);
   Indexer.spin(fwd, 13, volt);
-  Sorter.spin(fwd, 100, pct);
+  Shooter.spin(fwd, 100, pct);
   wait(600, msec);
   Indexer.stop(brake);
-  Sorter.stop(hold);
+  Shooter.stop(hold);
   LeftIntake.stop(hold);
   RightIntake.stop(hold);
   backLinear(-26, -40, 3);

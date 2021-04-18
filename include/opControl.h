@@ -5,5 +5,5 @@
 void joystickControl(void);
 void intakeControl(void);
 void indexerControl(void);
-void sorterControl(void);
+void shooterControl(void);
 void screenControl(void);

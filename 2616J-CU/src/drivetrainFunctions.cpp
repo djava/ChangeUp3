@@ -113,4 +113,20 @@ namespace drivetrain {
             }
         }
     }
+
+    void spinInPct(const double& pct) {
+        spinInVolts(pct * pctToVoltsCoeff);
+    }
+
+    void spinInPct(const double& pct, const vex::motor& motors...) {
+        spinInVolts(pct * pctToVoltsCoeff, motors...);
+    }
+
+    void spinInPct(const double& pct, const driveMotors& motors...) {
+        spinInVolts(pct * pctToVoltsCoeff, motors...);
+    }
+
+    void spinInPct(const double& pct, const driveSides& sides...) {
+        spinInVolts(pct, sides...);
+    }
 } // namespace drivetrain

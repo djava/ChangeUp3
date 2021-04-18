@@ -7,6 +7,8 @@
 #include <cmath>
 
 namespace drivetrain {
+    constexpr double pctToVoltsCoeff = 12.0 / 100.0
+
     typedef enum driveMotors {
         E_MOTOR_BACK_LEFT,
         E_MOTOR_BACK_RIGHT,
@@ -86,4 +88,10 @@ namespace drivetrain {
     void spinInVolts(const double& volts, const vex::motor& motors...);
     void spinInVolts(const double& volts, const driveMotors& motors...);
     void spinInVolts(const double& volts, const driveSides& sides...);
+
+    // No motors specified -> spin all
+    void spinInPct(const double& pct);
+    void spinInPct(const double& pct, const vex::motor& motors...);
+    void spinInPct(const double& pct, const driveMotors& motors...);
+    void spinInPct(const double& pct, const driveSides& sides...);
 } // namespace drivetrain
