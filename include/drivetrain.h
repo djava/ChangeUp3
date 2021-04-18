@@ -19,19 +19,19 @@ namespace drivetrain {
         E_SIDE_RIGHT
     } driveSides;
 
-    std::map<driveMotors, vex::motor> motorEnumToMotor {
+    std::map<driveMotors, vex::motor&> motorEnumToMotor {
         {E_MOTOR_BACK_LEFT, BackLeftDrive},
         {E_MOTOR_BACK_RIGHT, BackRightDrive},
         {E_MOTOR_FRONT_LEFT, FrontLeftDrive},
         {E_MOTOR_FRONT_RIGHT, FrontRightDrive}
     };
 
-    std::map<driveSides, std::vector<vex::motor>> sideEnumToMotors {
+    std::map<driveSides, std::vector<vex::motor&>> sideEnumToMotors {
         {E_SIDE_LEFT, {BackLeftDrive, FrontLeftDrive}},
         {E_SIDE_RIGHT, {BackRightDrive, FrontRightDrive}}
     };
 
-    std::vector<vex::motor> allMotors {
+    std::vector<vex::motor&> allMotors {
         BackLeftDrive, BackRightDrive, FrontLeftDrive, BackRightDrive
     };
 
@@ -46,48 +46,54 @@ namespace drivetrain {
         constexpr double inchesPerMotorDegree = inchesPerMotorRotation / 360.0;
         constexpr double inchesPerTrackingWheelDegree = inchesPerTrackingWheelRotation / 360.0;
 
-        constexpr inline double inchesToDrivenWheelDegrees(double inches) {
+        constexpr inline double inchesToDrivenWheelDegrees(const double& inches) {
             return inches * inchesPerDrivenWheelDegree;
         }
 
-        constexpr inline double inchesToMotorDegrees(double inches) {
+        constexpr inline double inchesToMotorDegrees(const double& inches) {
             return inches * inchesPerMotorDegree;
         }
 
-        constexpr inline double inchesToTrackingWheelDegree(double inches) {
+        constexpr inline double inchesToTrackingWheelDegree(const double& inches) {
             return inches * inchesPerTrackingWheelDegree;
         }
 
-        constexpr inline double drivenWheelDegreesToInches(double degrees) {
+        constexpr inline double drivenWheelDegreesToInches(const double& degrees) {
             return degrees / inchesPerDrivenWheelDegree;
         }
 
-        constexpr inline double motorDegreesToInches(double degrees) {
+        constexpr inline double motorDegreesToInches(const double& degrees) {
             return degrees / inchesPerMotorDegree;
         }
 
-        constexpr inline double trackingWheelDegreesToInches(double degrees) {
+        constexpr inline double trackingWheelDegreesToInches(const double& degrees) {
             return degrees / inchesPerDrivenWheelDegree;
         }
     } // namespace convert
 
     void resetIMEs(void);
-    void resetIMEs(vex::motor motors...);
-    void resetIMEs(driveMotors motors...);
-    void resetIMEs(driveSides side...);
+    void resetIMEs(const vex::motor& motors...);
+    void resetIMEs(const driveMotors& motors...);
+    void resetIMEs(const driveSides& side...);
 
     // Brake mode by default
     void stopAll(void);
-    void stopAll(vex::brakeType mode);
+    void stopAll(const vex::brakeType& mode);
 
     // No args -> identical to stopAll(void)
     void stop(void);
     // Only mode -> identical to stopAll(vex::brakeType mode)
-    void stop(vex::brakeType mode);
-    void stop(vex::motor motors...)
-    void stop(driveMotors motors...);
-    void stop(driveSides sides...);
-    void stop(vex::brakeType mode, vex::motor motors...);
-    void stop(vex::brakeType mode, driveMotors motors...);
-    void stop(vex::brakeType mode, driveSides sides...);
+    void stop(const vex::brakeType& mode);
+    void stop(const vex::motor& motors...)
+    void stop(const driveMotors& motors...);
+    void stop(const driveSides& sides...);
+    void stop(const vex::brakeType& mode, const vex::motor& motors...);
+    void stop(const vex::brakeType& mode, const driveMotors& motors...);
+    void stop(const vex::brakeType& mode, const driveSides& sides...);
+
+    // No motors specified -> spin all
+    void spinInVolts(const double& volts);
+    void spinInVolts(const double& volts, vex::motor motors...);
+    void spinInVolts(const double& volts, const driveMotors& motors...);
+    void spinInVolts(const double& volts, const driveSides& sides...);
 } // namespace drivetrain

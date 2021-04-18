@@ -7,19 +7,19 @@ namespace drivetrain {
         }
     }
 
-    void resetIMEs(vex::motor motors...) {
+    void resetIMEs(const vex::motor& motors...) {
         for (auto& i : motors) {
             i.resetRotation();
         }
     }
 
-    void resetIMEs(driveMotors motors...) {
+    void resetIMEs(const driveMotors& motors...) {
         for (auto& i : motors) {
             motorEnumToMotor[i].resetRotation();
         }
     }
 
-    void resetIMEs(driveSides sides...) {
+    void resetIMEs(const driveSides& sides...) {
         for (auto& i : sides) {
             for (auto& j : sideEnumToMotors[i]) {
                 j.resetRotation();
@@ -34,7 +34,7 @@ namespace drivetrain {
         }
     }
 
-    void stopAll(vex::brakeType mode) {
+    void stopAll(const vex::brakeType& mode) {
         for (auto& i : allMotors) {
             i.stop(mode);
         }
@@ -44,23 +44,23 @@ namespace drivetrain {
         stopAll();
     }
 
-    void stop(vex::brakeType mode) { 
+    void stop(const vex::brakeType& mode) { 
         stopAll(mode);
     }
 
-    void stop(vex::motor motors...) {
+    void stop(const vex::motor& motors...) {
         for (auto& i : motors) {
             i.stop(vex::brake);
         }
     }
 
-    void stop(driveMotors motors...) {
+    void stop(const driveMotors& motors...) {
         for (auto& i : motors) {
             motorEnumToMotor[i].stop(vex::brake);
         }
     }
 
-    void stop(driveSides sides...) {
+    void stop(const driveSides& sides...) {
         for (auto& i : sides) {
             for (auto& j : sideEnumToMotors[i]) {
                 i.stop(vex::brake);
@@ -68,19 +68,19 @@ namespace drivetrain {
         }
     }
 
-    void stop(vex::brakeType mode, vex::motor motors...) {
+    void stop(const vex::brakeType& mode, const vex::motor& motors...) {
         for (auto& i : motors) {
             i.stop(mode);
         }
     }
 
-    void stop(vex::brakeType mode, driveMotors motors...) {
+    void stop(const vex::brakeType& mode, driveMotors motors...) {
         for (auto& i : motors) {
             motorEnumToMotor[i].stop(mode);
         }
     }
 
-    void stop(vex::brakeType mode, driveSides sides...) {
+    void stop(const vex::brakeType& mode, driveSides sides...) {
         for (auto& i : sides) {
             for (auto& j : sideEnumToMotors[i]) {
                 i.stop(mode);
@@ -88,4 +88,29 @@ namespace drivetrain {
         }
     }
 
+    void spinInVolts(const double& volts) {
+        for (auto& i : allMotors) {
+            i.spin(fwd, volts, vex::volts);
+        }
+    }
+
+    void spinInVolts(const double& volts, const vex::motor& motors...) {
+        for (auto& i : motors) {
+            i.spin(fwd, volts, vex::volts);
+        }
+    }
+
+    void spinInVolts(const double& volts, const driveMotors& motors...) {
+        for (auto& i : motors) {
+            motorEnumToMotor[i].spin(fwd, volts, vex::volts);
+        }
+    }
+
+    void spinInVolts(const double& volts, const driveSides& sides...) {
+        for (auto& i : sides) {
+            for (auto& j : sideEnumToMotors[i]) {
+                i.spin(fwd, volts, vex::volts);
+            }
+        }
+    }
 } // namespace drivetrain
