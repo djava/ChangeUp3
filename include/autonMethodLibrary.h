@@ -1,11 +1,15 @@
-#ifndef AUTONMETHODLIBRARY_H
-#define AUTONMETHODLIBRARY_H
+#pragma once
+#include <vex.h>
+#include <utility>
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include "drivetrain.h"
 
 void testLinearEquation(double targetDistance, int maxSpeed);
-void turnRight(int degrees);
-void turnLeft(int degrees);
+void turnRight(double degrees);
+void turnLeft(double degrees);
 void turnCurve(double targetDistance, double leftSpeed, double rightSpeed);
-void turnLeft1(int degrees);
+void turnLeft1(double degrees);
 void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();
 void goTo(double finalX, double finalY, int turnDirection, double kP, double kD, double minSpeed, double errorMargin);
@@ -14,4 +18,4 @@ void IgnoreX(double finalX, double finalY, int turnDirection, double kP, double 
               double minSpeed, double errorMargin);
 void IgnoreY(double finalX, double finalY, int turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);
-#endif
+void resetDriveRotation(void);
