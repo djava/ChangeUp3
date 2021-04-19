@@ -5,34 +5,28 @@ namespace dt = drivetrain;
 void leftAndCenter() {}
 
 void Left() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   turnCurve(15, 15, 56);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(400, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   backLinear(-9, -40, 3);
 }
 
 void leftAndMiddle() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   turnCurve(16, 15, 56);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(400, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   turnCurve(51, -50, -68);
 
   Indexer.spin(fwd, 13, volt);
@@ -40,22 +34,19 @@ void leftAndMiddle() {
   wait(600, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.stop(hold);
-  RightIntake.stop(hold);
+  intakes::stopAll(hold);
 
   backLinear(-10.5, -40, 3);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 80, pct);
+  intakes::spinMaxIn(intakes::E_INTAKE_LEFT);
+  intakes::spinInPct(intakes::E_INTAKE_RIGHT);
   Indexer.spin(fwd, 80, pct);
 }
 
 void rightAndMiddle() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   turnCurve(23.5, 70, 20);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(300, msec);
@@ -63,8 +54,7 @@ void rightAndMiddle() {
   wait(200, msec);
   Shooter.stop(hold);
   wait(1, sec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   turnCurve(58, -85, -48);
 
   Indexer.spin(fwd, 13, volt);
@@ -73,18 +63,15 @@ void rightAndMiddle() {
   wait(600, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.stop(hold);
-  RightIntake.stop(hold);
+  intakes::stopAll(hold);
 
   backLinear(-10.5, -40, 3);
 }
 
 void Right() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   turnCurve(23.5, 70, 20);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(300, msec);
@@ -92,8 +79,7 @@ void Right() {
   wait(200, msec);
   Shooter.stop(hold);
   wait(1000, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   backLinear(-11.25, -25, 5);
 }
 
@@ -101,10 +87,8 @@ void progSkills() {
 
   // 36, 27
   Indexer.spin(fwd, 13, volt);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::spinMaxIn();
+  intakes::stopAll();
   // 11, 4.5
 
   // decrease y
@@ -120,13 +104,10 @@ void progSkills() {
   // 2nd
   backLinear(-11.25, -45, 2);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   wait(200, msec);
   // increase y
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
-
+  intakes::stopAll();
 
   Indexer.spin(fwd, 100, pct);
   wait(200, msec);
@@ -138,17 +119,14 @@ void progSkills() {
   Shooter.stop(hold);
   Indexer.spin(fwd, 100, pct);
   wait(400, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   // 3rd
   backLinear(-7.5, -20, 2);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   backLinear(-1.5, -40, 2);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
 
   // lower x
   wait(500, msec);
@@ -169,8 +147,7 @@ void progSkills() {
   // Increase X
   Indexer.spin(fwd, 100, pct);
   Indexer.stop(brake);
-  RightIntake.stop(brake);
-  LeftIntake.stop(brake);
+  intakes::stopAll();
   // Increase X
   Indexer.stop(brake);
   Indexer.spin(fwd, 100, pct);
@@ -183,12 +160,10 @@ void progSkills() {
 
   // 5th
   backLinear(-2.25, -20, 2);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 100, pct);
   Indexer.stop(brake);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
 
   Indexer.spin(fwd, 100, pct);
   Shooter.spin(fwd, 13, volt);
@@ -197,19 +172,16 @@ void progSkills() {
 
   // 6th
   backLinear(-15, -40, 2);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 100, pct);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Shooter.spin(fwd, 100, pct);
   wait(150, msec);
   Indexer.stop(brake);
   wait(300, msec);
   Shooter.stop(brake);
 
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   // 127,62.5
 
@@ -244,14 +216,12 @@ void progSkills() {
   // 9th
 
   backLinear(-4, -30, 3);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 100, pct);
 
   wait(200, msec);
 
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   wait(30, msec);
 
   wait(600, msec);
@@ -281,8 +251,7 @@ void progSkills() {
 }
 
 void homeRow() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinInMax();
   Indexer.spin(fwd, 100, pct);
   wait(200, msec);
   turnCurve(15, 25, 50);
@@ -302,20 +271,17 @@ void homeRow() {
   }
 
   wait(20, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   wait(600, msec);
 
   Indexer.stop(brake);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   backLinear(-2.4, -30, 3);
 
   turnCurve(45, -50, -68);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(100, msec);
@@ -331,23 +297,19 @@ void homeRow() {
     wait(5, msec);
   }
   wait(20, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   wait(200, msec);
 
   Indexer.spin(reverse, 50, pct);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   backLinear(-11, -40, 3);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 100, pct);
 
-
-  Indexer.spin(fwd, 13, volt);
+  Indexer.spin(fwd, 13, volt); // HOW
   Shooter.spin(fwd, 100, pct);
 
   wait(100, msec);
@@ -362,8 +324,7 @@ void homeRow() {
     wait(5, msec);
   }
   wait(50, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   wait(100, msec);
 
@@ -375,13 +336,11 @@ void homeRow() {
 }
 
 void homeRowRight() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 60, pct);
   wait(300, msec);
   turnCurve(24.6, 80, 20);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   Shooter.spin(fwd, 13, volt);
   // wait(100, msec);
   wait(800, msec);
@@ -397,8 +356,7 @@ void homeRowRight() {
   turnCurve(61, -80, -50);
   Indexer.spin(fwd, 13, volt);
   Sorter.spin(fwd, 13, volt);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
 
   Indexer.spin(fwd, 100, pct);
   Sorter.spin(fwd, 100, pct);
@@ -411,8 +369,7 @@ void homeRowRight() {
       wait(125, msec);
     }
   }
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   wait(100, msec);
   Indexer.spin(reverse, 30, pct);
   wait(200, msec);
@@ -421,8 +378,8 @@ void homeRowRight() {
   backLinear(-14, -30, 3);
   Sorter.spin(fwd, 100, pct);
   wait(500, msec);
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 80, pct);
+  intakes::spinMaxIn(intakes::E_INTAKE_LEFT);
+  intakes::spinInPct(intakes::E_INTAKE_RIGHT);
   Indexer.spin(fwd, 80, pct);
 
   Sorter.spin(fwd, 100, pct);
@@ -430,8 +387,7 @@ void homeRowRight() {
   wait(500, msec);
 
   // wait(100, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   wait(200, msec);
   backLinear(-12, -40, 3);
 
@@ -440,26 +396,23 @@ void homeRowRight() {
 }
 
 void rightAndSide() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   Indexer.spin(fwd, 100, pct);
   wait(300, msec);
   turnCurve(24.6, 70, 28);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Shooter.spin(fwd, 13, volt);
   wait(100, msec);
   Indexer.stop(brake);
   wait(300, msec);
   Shooter.stop(brake);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
+  LeftIntake.spin(reverskse, 100, pct);
   wait(500, msec);
   backLinear(-1.6, -25, 2);
   Indexer.spin(fwd, 100, pct);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
 
   dt::spinInPct(100, dt::E_SIDE_LEFT);
   dt::spinInPct(85, dt::E_SIDE_RIGHT);
@@ -476,8 +429,7 @@ void rightAndSide() {
     wait(10, msec);
     tracker++;
   }
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   dt::stopAll(coast);
 
   wait(300, msec);
@@ -491,8 +443,8 @@ void rightAndSide() {
   Shooter.spin(fwd, 100, pct);
 
   wait(500, msec);
+  intakes::spinMaxOut();
   LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
   wait(500, msec);
   backLinear(-8, -40, 4);
 }
@@ -501,33 +453,27 @@ void Center() {
   Inertial.setHeading(270, deg);
   wait(2, sec);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
-
+  intakes::spinMaxIn();
+  intakes::stopAll();
 
   IgnoreY(-18, 31.5, -1, 2.2, 60, 45, 70);
   wait(8, sec);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   dt::spinInPct(100);
 
   wait(500, msec);
 
   dt::stopAll(coast);
 
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(600, msec);
   Indexer.stop(brake);
   Shooter.stop(brake);
 
-  LeftIntake.spin(fwd, -100, pct);
-  RightIntake.spin(fwd, -100, pct);
+  intakes::spinMaxOut();
 
   dt::spinInPct(-100);
 
@@ -538,18 +484,15 @@ void Center() {
 }
 
 void OrcahBlue() {
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 100, pct);
+  intakes::spinMaxIn();
   turnCurve(16, 15, 56);
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(400, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
   turnCurve(51, -50, -68);
 
   Indexer.spin(fwd, 13, volt);
@@ -557,23 +500,19 @@ void OrcahBlue() {
   wait(600, msec);
   Indexer.stop(brake);
   Shooter.stop(hold);
-  LeftIntake.stop(hold);
-  RightIntake.stop(hold);
+  intakes::stopAll(hold);
 
   backLinear(-11.2, -40, 3);
 
-  LeftIntake.spin(fwd, 100, pct);
-  RightIntake.spin(fwd, 80, pct);
+  intakes::spinMaxIn(intakes::E_INTAKE_LEFT);
+  intakes::spinInPct(intakes::E_INTAKE_RIGHT);
   Indexer.spin(fwd, 80, pct);
 
-
-  LeftIntake.stop(brake);
-  RightIntake.stop(brake);
+  intakes::stopAll();
   Indexer.spin(fwd, 13, volt);
   Shooter.spin(fwd, 100, pct);
   wait(600, msec);
-  LeftIntake.spin(reverse, 100, pct);
-  RightIntake.spin(reverse, 100, pct);
+  intakes::spinMaxOut();
 
   wait(1, sec);
   backLinear(-19.6, -40, 3);

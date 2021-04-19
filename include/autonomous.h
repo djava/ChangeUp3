@@ -1,6 +1,7 @@
 #pragma once
 #include "vex.h"
 #include "drivetrain.h"
+#include "intakes.h"
 #include "autonMethodLibrary.h"
 
 void leftAndCenter(void);

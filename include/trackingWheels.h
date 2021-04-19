@@ -1,5 +1,5 @@
 #pragma once
-#include "drivetrainConfig.h"
+#include "config.h"
 #include "vex.h"
 #include <map>
 #include <vector>
@@ -7,20 +7,6 @@
 #include <cmath>
 
 namespace trackingWheels {
-
-    typedef enum trackingWheels {
-        E_TRACKING_LEFT,
-        E_TRACKING_RIGHT
-    } trackingWheels;
-
-    std::map<trackingWheels, vex::rotation> wheelEnumToRotationSensor {
-        {E_TRACKING_LEFT, RotationLeft},
-        {E_TRACKING_RIGHT, RotationRight}
-    };
-
-    std::vector<vex::rotation> allRotationSensors {
-        RotationLeft, RotationRight
-    };
 
     namespace convert {
         constexpr double inchesPerWheelRotation = wheelSizeInInches * M_PI;

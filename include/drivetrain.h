@@ -1,5 +1,5 @@
 #pragma once
-#include "drivetrainConfig.h"
+#include "config.h"
 #include "vex.h"
 #include <map>
 #include <vector>
@@ -7,35 +7,7 @@
 #include <cmath>
 
 namespace drivetrain {
-    constexpr double pctToVoltsCoeff = 12.0 / 100.0
-
-    typedef enum driveMotors {
-        E_MOTOR_BACK_LEFT,
-        E_MOTOR_BACK_RIGHT,
-        E_MOTOR_FRONT_LEFT,
-        E_MOTOR_FRONT_RIGHT
-    } driveMotors;
-
-    typedef enum driveSides {
-        E_SIDE_LEFT,
-        E_SIDE_RIGHT
-    } driveSides;
-
-    std::map<driveMotors, vex::motor&> motorEnumToMotor {
-        {E_MOTOR_BACK_LEFT, BackLeftDrive},
-        {E_MOTOR_BACK_RIGHT, BackRightDrive},
-        {E_MOTOR_FRONT_LEFT, FrontLeftDrive},
-        {E_MOTOR_FRONT_RIGHT, FrontRightDrive}
-    };
-
-    std::map<driveSides, std::vector<vex::motor&>> sideEnumToMotors {
-        {E_SIDE_LEFT, {BackLeftDrive, FrontLeftDrive}},
-        {E_SIDE_RIGHT, {BackRightDrive, FrontRightDrive}}
-    };
-
-    std::vector<vex::motor&> allMotors {
-        BackLeftDrive, BackRightDrive, FrontLeftDrive, BackRightDrive
-    };
+    constexpr double pctToVoltsCoeff = 12.0 / 100.0;
 
     namespace convert {
         constexpr double wheelRPM = motorRPM * motorToWheelRatio;

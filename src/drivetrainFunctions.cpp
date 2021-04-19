@@ -90,26 +90,26 @@ namespace drivetrain {
 
     void spinInVolts(const double& volts) {
         for (auto& i : allMotors) {
-            i.spin(fwd, volts, vex::volts);
+            i.spin(vex::fwd, volts, vex::volts);
         }
     }
 
     void spinInVolts(const double& volts, const vex::motor& motors...) {
         for (auto& i : {motors...}) {
-            i.spin(fwd, volts, vex::volts);
+            i.spin(vex::fwd, volts, vex::volts);
         }
     }
 
     void spinInVolts(const double& volts, const driveMotors& motors...) {
         for (auto& i : {motors...}) {
-            motorEnumToMotor[i].spin(fwd, volts, vex::volts);
+            motorEnumToMotor[i].spin(vex::fwd, volts, vex::volts);
         }
     }
 
     void spinInVolts(const double& volts, const driveSides& sides...) {
         for (auto& i : {sides...}) {
             for (auto& j : sideEnumToMotors[i]) {
-                i.spin(fwd, volts, vex::volts);
+                i.spin(vex::fwd, volts, vex::volts);
             }
         }
     }

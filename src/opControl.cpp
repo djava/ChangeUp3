@@ -15,24 +15,6 @@ void joystickControl() {
   dt::spinInVolts(rightJoystickValue * valueToVoltCoeff, dt::E_SIDE_RIGHT);
 }
 
-void intakeControl() {
-  // Intake
-  if (Controller1.ButtonR1.pressing()) {
-    LeftIntake.spin(fwd, 100, pct);
-    RightIntake.spin(fwd, 100, pct);
-  }
-
-  else if (Controller1.ButtonRight.pressing()) {
-    LeftIntake.spin(reverse, 100, pct);
-    RightIntake.spin(reverse, 100, pct);
-  }
-
-  else {
-    LeftIntake.stop(brake);
-    RightIntake.stop(brake);
-  }
-}
-
 void indexerControl() {
   // Convey Balls
   if (Controller1.ButtonL1.pressing()) {
@@ -47,8 +29,7 @@ void indexerControl() {
 void shooterControl() {
   // Outtake
   if (Controller1.ButtonR2.pressing()) {
-    LeftIntake.spin(reverse, 100, pct);
-    RightIntake.spin(reverse, 100, pct);
+    intakes::spinMaxOut();
     Indexer.spin(reverse, 100, pct);
     Shooter.stop(hold);
   }
