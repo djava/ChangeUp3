@@ -91,7 +91,7 @@ void Right() {
   Indexer.stop(brake);
   wait(200, msec);
   Shooter.stop(hold);
-  wait(1, sec);
+  wait(1000, msec);
   LeftIntake.spin(reverse, 100, pct);
   RightIntake.spin(reverse, 100, pct);
   backLinear(-11.25, -25, 5);

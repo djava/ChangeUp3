@@ -3,14 +3,15 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/2616J-CU/**",
-                "${workspaceFolder}/2616J-CU/include/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/*"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "compileCommands": "${workspaceFolder}/compile_commands.json"
         }
     ],
     "version": 4
