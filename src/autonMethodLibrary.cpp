@@ -7,43 +7,44 @@ namespace tracking = trackingWheels;
 
 // Make a curve towards an object. We will input how far the curve will last,
 // and the speed of the left side and right side
-void turnCurve(const double& targetDistance, const double& leftSpeed, const &double rightSpeed) {
+void turnCurve(const double& targetDistance, const double& leftSpeed, const double& rightSpeed) {
+  dt::resetIMEs(BackLeftDrive);
   constexpr double lowerPowerLimit = 15.0;
   constexpr double pctToVoltsCoeff = 12.0;
 
   double trackingWheelDegreesToComplete = tracking::convert::inchesToWheelDegrees(targetDistance);
   
-  tracking::resetPositions(tracking::E_TRACKING_LEFT);
-  while (fabs(tracking::getAvgPosition()) < degrees) {
+  tracking::resetPositions(tracking::wheels::left);
+  while (fabs(tracking::getAvgPosition()) < trackingWheelDegreesToComplete) {
     double percentCompleted =
-              100 * fabs(tracking::getPosition(tracking::E_TRACKING_LEFT)) / trackingWheelDegreesToComplete;
+              100 * fabs(tracking::getPosition(tracking::wheels::left)) / trackingWheelDegreesToComplete;
     
     if (percentCompleted <= 3) {
       double lSpeed = clamp(leftSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
       double rSpeed = clamp(rightSpeed / 10.0, -lowerPowerLimit, lowerPowerLimit);
-      dt::spinInVolts(lSpeed / 25.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
-      dt::spinInVolts(rSpeed / 25.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+      dt::spinInVolts(lSpeed / 25.0 * pctToVoltsCoeff, {dt::driveSides::left});
+      dt::spinInVolts(rSpeed / 25.0 * pctToVoltsCoeff, {dt::driveSides::right});
 
     } else if (percentCompleted <= 30) {
       double lSpeed = clamp(leftSpeed * 3.33 * percentCompleted, -lowerPowerLimit, lowerPowerLimit);
       double rSpeed = clamp(rightSpeed * 3.33 * percentCompleted, -lowerPowerLimit, lowerPowerLimit);
-      dt::spinInVolts(lSpeed / 75.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
-      dt::spinInVolts(rSpeed / 75.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+      dt::spinInVolts(lSpeed / 75.0 * pctToVoltsCoeff, {dt::driveSides::left});
+      dt::spinInVolts(rSpeed / 75.0 * pctToVoltsCoeff, {dt::driveSides::right});
 
     } else if (percentCompleted <= 70) {
-      dt::spinInVolts(leftSpeed / 100.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
-      dt::spinInVolts(rightSpeed / 100.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+      dt::spinInVolts(leftSpeed / 100.0 * pctToVoltsCoeff, {dt::driveSides::left});
+      dt::spinInVolts(rightSpeed / 100.0 * pctToVoltsCoeff, {dt::driveSides::right});
 
     } else {
-      int lSpeed = (leftSpeed * (100 - percentCompleted)) * 0.0333;
+      double lSpeed = (leftSpeed * (100 - percentCompleted)) * 0.0333;
       lSpeed = clamp(lSpeed, std::min(-lowerPowerLimit, -leftSpeed * 3.0 / 16.0), 
                              std::max(lowerPowerLimit, leftSpeed * 3.0 / 16));
-      int rSpeed = (rightSpeed * (100 - percentCompleted)) * 0.0333;
+      double rSpeed = (rightSpeed * (100 - percentCompleted)) * 0.0333;
       rSpeed = clamp(rSpeed, std::min(-lowerPowerLimit, -rightSpeed * 3.0 / 16.0), 
                              std::max(lowerPowerLimit, rightSpeed * 3.0 / 16));
 
-      dt::spinInVolts(lspeed / 50.0 * pctToVoltsCoeff, dt::E_SIDE_LEFT);
-      dt::spinInVolts(rSpeed / 50.0 * pctToVoltsCoeff, dt::E_SIDE_RIGHT);
+      dt::spinInVolts(lSpeed / 50.0 * pctToVoltsCoeff, {dt::driveSides::left});
+      dt::spinInVolts(rSpeed / 50.0 * pctToVoltsCoeff, {dt::driveSides::right});
     }
   }
   dt::stopAll();
@@ -69,11 +70,11 @@ void positionTracking() {
     double initialHeadingDeg = fmod(360.0 + 90.0 - Inertial.heading(), 360.0);
     double initialHeadingRad = initialHeadingDeg * degToRadCoeff;
     double initialLeftPos = LeftRotation.position(deg);
-    double initialRight = RightRotation.position(deg);
+    double initialRightPos = RightRotation.position(deg);
     wait(5, msec);
 
-    double leftChange = (LeftRotation.position(deg) - initialLeft) * tracking::wheelSizeInInches * M_PI / 360.0;
-    double rightChange = (RightRotation.position(deg) - initialRight) * tracking::wheelSizeInInches * M_PI / 360.0;
+    double leftChange = (LeftRotation.position(deg) - initialLeftPos) * tracking::wheelSizeInInches * M_PI / 360.0;
+    double rightChange = (RightRotation.position(deg) - initialRightPos) * tracking::wheelSizeInInches * M_PI / 360.0;
     double movement = (leftChange + rightChange) / 2;
 
     globalX += cos(initialHeadingRad) * movement;
@@ -93,7 +94,7 @@ void positionTracking() {
     } else if (numberChange == 2) {
       globalX = 127;
       globalY = 62.5;
-      numberChange = 0
+      numberChange = 0;
     }
   }
 }
@@ -153,7 +154,7 @@ void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double
     Brain.resetTimer();
     
     double speed = fabs((kP * error) + (kD * errorDerivative));
-    speed = minSpeed > speed ? minSpeed;
+    speed = std::max(minSpeed, speed);
     dt::spinInVolts(speed * 12.0 / 100.0);
     wait(15, msec);
   
@@ -170,7 +171,7 @@ void turn(const autonTurnDirection& direction, const double& degrees) {
   constexpr double flatTurnValue = 3.4;
 
   // Multiply voltages by this to turn left or right, -1 -> left, 1 -> right
-  constexpr int directionCoeff = direction == E_TURN_DIRECTION_LEFT ? -1 : 1;
+  int directionCoeff = direction == E_TURN_DIRECTION_LEFT ? -1 : 1;
 
   // Add 360 to prevent negatives (break the mod), add 90 for shift to match
   // up with the polar coordinate system
@@ -191,15 +192,15 @@ void turn(const autonTurnDirection& direction, const double& degrees) {
     previousAngleError = angleError;
 
     turnVelocity = (angleError * kP) - (angleDerivative * kD) + flatTurnValue;
-    turnVelocity = std::max(turnVelocity, 10);
+    turnVelocity = std::max(turnVelocity, 10.0);
 
-    dt::spinInVolts(directionCoeff * turnVelocity * 2 * 9 / 100, dt::E_SIDE_LEFT);
-    dt::spinInVolts(-directionCoeff * turnVelocity * 2 * 9 / 100, dt::E_SIDE_RIGHT);
+    dt::spinInVolts(directionCoeff * turnVelocity * 2 * 9 / 100, {dt::driveSides::left});
+    dt::spinInVolts(-directionCoeff * turnVelocity * 2 * 9 / 100, {dt::driveSides::right});
     wait(10, msec);
   }
 
-  dt::spinInVolts(directionCoeff * 0.2 * 12.0, dt::E_SIDE_LEFT);
-  dt::spinInVolts(-directionCoeff * 0.2 * 12.0, dt::E_SIDE_RIGHT);
+  dt::spinInVolts(directionCoeff * 0.2 * 12.0, {dt::driveSides::left});
+  dt::spinInVolts(-directionCoeff * 0.2 * 12.0, {dt::driveSides::right});
   wait(fabs(origChangeHeading / 3.0), msec);
   
   dt::stopAll(coast);
@@ -223,21 +224,21 @@ void backLinear(double targetDistance, double minSpeed, double kP) {
   dt::stopAll();
 }
 
-void backCurve(double targetDistance, int minSpeed, double kP, int leftSpeed, int rightSpeed) {
+void backCurve(double targetDistance, double minSpeed, double kP, double leftSpeed, double rightSpeed) {
   tracking::resetPositions();
   double degreesToCompleteMove = tracking::convert::inchesToWheelDegrees(targetDistance);
   double curveFactor = rightSpeed / leftSpeed;
-  while (tracking::getPosition(tracking::E_TRACKING_LEFT) > degrees) {
+  while (tracking::getPosition(tracking::wheels::left) > degreesToCompleteMove) {
     double inchesLeftInMove = 
-            tracking::convert::inchesToWheelDegrees(degrees - tracking::getPosition(tracking::E_TRACKING_LEFT));
+            tracking::convert::inchesToWheelDegrees(degreesToCompleteMove - tracking::getPosition(tracking::wheels::left));
 
     double lSpeed = inchesLeftInMove * kP;
     lSpeed = std::max(lSpeed, minSpeed);
     
     double rSpeed = curveFactor * lSpeed;
 
-    dt::spinInVolts(lSpeed, dt::E_SIDE_LEFT);
-    dt::spinInVolts(rSpeed, dt::E_SIDE_RIGHT);
+    dt::spinInVolts(lSpeed, {dt::driveSides::left});
+    dt::spinInVolts(rSpeed, {dt::driveSides::right});
     wait(10, msec);
   }
   dt::stopAll();
@@ -260,7 +261,7 @@ void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirecti
     turnHeading = changeX > 0 ? 180 + deviationHeading : 360 - deviationHeading;
   }
 
-  turn(autonTurnDirection, turnHeading);
+  turn(turnDirection, turnHeading);
   wait(350, msec);
   
   double error = sqrt(pow(changeX, 2) + pow(changeY, 2));
@@ -281,10 +282,10 @@ void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirecti
     dt::spinInVolts(speed * pctToVoltCoeff);
     wait(10, msec);
   }
-  dt::stopAll()
+  dt::stopAll();
 }
 
-void IgnoreY(double finalX, double finalY, int turnDirection, double kP,
+void IgnoreY(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP,
              double kD, double minSpeed, double errorMargin) {
   constexpr double radToDegCoeff = 180.0 / M_PI;
   constexpr double pctToVoltCoeff = 12.0 / 100.0;
@@ -295,13 +296,13 @@ void IgnoreY(double finalX, double finalY, int turnDirection, double kP,
 
   double deviationHeading = fabs(atan2f(changeY, changeX)) * radToDegCoeff;
   double turnHeading;
-  if (isInitialChangeYNegative) {
+  if (isInitialChangeXNegative) {
     turnHeading = changeX > 0 ? deviationHeading : 180 - deviationHeading;
   } else {
     turnHeading = changeX > 0 ? 180 + deviationHeading : 360 - deviationHeading;
   }
 
-  turn(autonTurnDirection, turnHeading);
+  turn(turnDirection, turnHeading);
   wait(350, msec);
   
   double error = sqrt(pow(changeX, 2) + pow(changeY, 2));
@@ -322,5 +323,9 @@ void IgnoreY(double finalX, double finalY, int turnDirection, double kP,
     dt::spinInVolts(speed * pctToVoltCoeff);
     wait(10, msec);
   }
-  dt::stopAll()
+  dt::stopAll();
+}
+
+void setCoordinates(int changeNumber) {
+  numberChange = changeNumber;
 }

@@ -1,5 +1,8 @@
 #pragma once
 #include "vex.h"
+#include <map>
+#include <vector>
+#include <memory>
 
 namespace drivetrain {
     constexpr double motorRPM = 200.0;
@@ -7,32 +10,32 @@ namespace drivetrain {
     constexpr double motorToWheelRatio = 24.0/12.0;
     constexpr double wheelSizeInInches = 4.125;
 
-    typedef enum driveMotors {
-        E_MOTOR_BACK_LEFT,
-        E_MOTOR_BACK_RIGHT,
-        E_MOTOR_FRONT_LEFT,
-        E_MOTOR_FRONT_RIGHT
-    } driveMotors;
+    typedef enum class driveMotors {
+        backLeft,
+        backRight,
+        frontLeft,
+        frontRight
+    } motors;
 
-    typedef enum driveSides {
-        E_SIDE_LEFT,
-        E_SIDE_RIGHT
-    } driveSides;
+    typedef enum class driveSides {
+        left,
+        right
+    } sides;
 
-    std::map<driveMotors, vex::motor&> motorEnumToMotor {
-        {E_MOTOR_BACK_LEFT, BackLeftDrive},
-        {E_MOTOR_BACK_RIGHT, BackRightDrive},
-        {E_MOTOR_FRONT_LEFT, FrontLeftDrive},
-        {E_MOTOR_FRONT_RIGHT, FrontRightDrive}
+    static std::map<driveMotors, vex::motor*> motorEnumToMotor {
+        {motors::backLeft, &BackLeftDrive},
+        {motors::backRight, &BackRightDrive},
+        {motors::frontLeft, &FrontLeftDrive},
+        {motors::frontRight, &FrontRightDrive}
     };
 
-    std::map<driveSides, std::vector<vex::motor&>> sideEnumToMotors {
-        {E_SIDE_LEFT, {BackLeftDrive, FrontLeftDrive}},
-        {E_SIDE_RIGHT, {BackRightDrive, FrontRightDrive}}
+    static std::map<driveSides, std::vector<vex::motor*>> sideEnumToMotors {
+        {sides::left, {&BackLeftDrive, &FrontLeftDrive}},
+        {sides::right, {&BackRightDrive, &FrontRightDrive}}
     };
 
-    std::vector<vex::motor&> allMotors {
-        BackLeftDrive, BackRightDrive, FrontLeftDrive, BackRightDrive
+    static std::vector<vex::motor*> allMotors {
+        &BackLeftDrive, &BackRightDrive, &FrontLeftDrive, &BackRightDrive
     };
 }
 
@@ -40,35 +43,35 @@ namespace trackingWheels {
     constexpr double wheelSizeInInches = 2.75;
     constexpr double wheelToRotationSensorRatio = 1.0/1.0;
 
-    typedef enum trackingWheels {
-        E_TRACKING_LEFT,
-        E_TRACKING_RIGHT
-    } trackingWheels;
+    typedef enum class trackingWheels {
+        left,
+        right
+    } wheels;
 
-    std::map<trackingWheels, vex::rotation> wheelEnumToRotationSensor {
-        {E_TRACKING_LEFT, RotationLeft},
-        {E_TRACKING_RIGHT, RotationRight}
+    static std::map<trackingWheels, vex::rotation*> wheelEnumToRotationSensor {
+        {wheels::left, &LeftRotation},
+        {wheels::right, &RightRotation}
     };
 
-    std::vector<vex::rotation> allRotationSensors {
-        RotationLeft, RotationRight
+    static std::vector<vex::rotation*> allRotationSensors {
+        &RightRotation, &LeftRotation
     };
 }
 
 namespace intakes {
     constexpr bool fwdToIntake = true;
 
-    typedef enum intakeMotors {
-        E_INTAKE_LEFT,
-        E_INTAKE_RIGHT
-    } intakeMotors;
+    typedef enum class intakeMotors {
+        left,
+        right
+    } motors;
 
-    std::map<intakeMotors, vex::motor> intakeEnumToMotor {
-        {E_INTAKE_LEFT, LeftIntake},
-        {E_INTAKE_RIGHT, RightIntake}
+    static std::map<intakeMotors, vex::motor*> intakeEnumToMotor {
+        {motors::left, &LeftIntake},
+        {motors::right, &RightIntake}
     };
 
-    std::vector<vex::motor> allMotors {
-        LeftIntake, RightIntake
+    static std::vector<vex::motor*> allMotors {
+        &LeftIntake, &RightIntake
     };
 }

@@ -17,20 +17,22 @@ namespace trackingWheels {
         }
 
         constexpr inline double wheelDegreesToInches(const double& degrees) {
-            return degrees / inchesPerDrivenWheelDegree;
+            return degrees / inchesPerWheelDegree;
         }
     } // namespace convert
 
     // No args -> reset all
     void resetPositions(void);
-    void resetPositions(const trackingWheels& wheels...);
-    void resetPositions(const vex::rotation& sensors...);
+    void resetPositions(const std::vector<trackingWheels>& wheels);
+    void resetPositions(std::vector<vex::rotation>& sensors);
+    void resetPositions(vex::rotation& sensor);
+    void resetPositions(const trackingWheels& wheel);
 
     double getPosition(const trackingWheels& wheel);
-    double getPosition(const vex::rotation& sensor);
+    double getPosition(vex::rotation& sensor);
 
     // No args -> avg all wheel positions
     double getAvgPosition(void);
-    double getAvgPosition(const trackingWheels& wheels...);
-    double getAvgPosition(const vex::rotation& sensors...);
+    double getAvgPosition(const std::vector<trackingWheels>& wheels);
+    double getAvgPosition(std::vector<vex::rotation>& sensors);
 } // namespace trackingWheels

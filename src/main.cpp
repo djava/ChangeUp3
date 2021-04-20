@@ -62,10 +62,10 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  Controller.ButtonR1.pressed(intakes::spinMaxIn);
-  Controller.ButtonRight.pressed(intakes::spinMaxOut);
-  Controller.ButtonR1.released(intakes::stopAll);
-  Controller.ButtonRight.released(intakes::stopAll);
+  Controller1.ButtonR1.pressed(intakes::spinMaxIn);
+  Controller1.ButtonRight.pressed(intakes::spinMaxOut);
+  Controller1.ButtonR1.released(intakes::stopAll);
+  Controller1.ButtonRight.released(intakes::stopAll);
   
   while (1) {
     joystickControl();

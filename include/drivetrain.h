@@ -35,35 +35,45 @@ namespace drivetrain {
         }
     } // namespace convert
 
-    void resetIMEs(void);
-    void resetIMEs(const vex::motor& motors...);
-    void resetIMEs(const driveMotors& motors...);
-    void resetIMEs(const driveSides& side...);
+    void resetIMEs();
+    void resetIMEs(std::vector<vex::motor>& motors);
+    void resetIMEs(const std::vector<driveMotors>& motors);
+    void resetIMEs(const std::vector<driveSides>& sides);
+    void resetIMEs(vex::motor& motor);
+    void resetIMEs(const driveMotors& motor);
+    void resetIMEs(const driveSides& side);
 
-    // Brake mode by default
-    void stopAll(void);
+    void stopAll();
     void stopAll(const vex::brakeType& mode);
 
-    // No args -> identical to stopAll(void)
-    void stop(void);
-    // Only mode -> identical to stopAll(vex::brakeType mode)
+    void stop();
     void stop(const vex::brakeType& mode);
-    void stop(const vex::motor& motors...)
-    void stop(const driveMotors& motors...);
-    void stop(const driveSides& sides...);
-    void stop(const vex::brakeType& mode, const vex::motor& motors...);
-    void stop(const vex::brakeType& mode, const driveMotors& motors...);
-    void stop(const vex::brakeType& mode, const driveSides& sides...);
+    void stop(std::vector<vex::motor>& motors);
+    void stop(const std::vector<driveMotors>& motors);
+    void stop(const std::vector<driveSides>& sides);
+    void stop(const driveMotors& motor);
+    void stop(const driveSides& side);
+    void stop(vex::motor& motor);
+    void stop(const vex::brakeType& mode, std::vector<vex::motor>& motors);
+    void stop(const vex::brakeType& mode, const std::vector<driveMotors>& motors);
+    void stop(const vex::brakeType& mode, const std::vector<driveSides>& sides);
+    void stop(const vex::brakeType& mode, vex::motor& motor);
+    void stop(const vex::brakeType& mode, const driveMotors& motor);
+    void stop(const vex::brakeType& mode, const driveSides& side);
 
-    // No motors specified -> spin all
     void spinInVolts(const double& volts);
-    void spinInVolts(const double& volts, const vex::motor& motors...);
-    void spinInVolts(const double& volts, const driveMotors& motors...);
-    void spinInVolts(const double& volts, const driveSides& sides...);
+    void spinInVolts(const double& volts, std::vector<vex::motor>& motors);
+    void spinInVolts(const double& volts, const std::vector<driveMotors>& motors);
+    void spinInVolts(const double& volts, const std::vector<driveSides>& sides);
+    void spinInVolts(const double& volts, vex::motor& motor);
+    void spinInVolts(const double& volts, const driveMotors& motor);
+    void spinInVolts(const double& volts, const driveSides& side);
 
-    // No motors specified -> spin all
     void spinInPct(const double& pct);
-    void spinInPct(const double& pct, const vex::motor& motors...);
-    void spinInPct(const double& pct, const driveMotors& motors...);
-    void spinInPct(const double& pct, const driveSides& sides...);
+    void spinInPct(const double& pct, std::vector<vex::motor>& motors);
+    void spinInPct(const double& pct, const std::vector<driveMotors>& motors);
+    void spinInPct(const double& pct, const std::vector<driveSides>& sides);
+    void spinInPct(const double& pct, vex::motor& motor);
+    void spinInPct(const double& pct, const driveSides& side);
+    void spinInPct(const double& pct, const driveMotors& motor);
 } // namespace drivetrain

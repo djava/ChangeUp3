@@ -11,38 +11,48 @@ namespace intakes {
     constexpr int directionCoeff = (fwdToIntake * 2) - 1;
 
     void spinMax(void);
-    void spinMax(const intakeMotors& motors...);
-    void spinMax(const vex::motor& motors...);
+    void spinMax(const std::vector<intakeMotors>& motors);
+    void spinMax(std::vector<vex::motor>& motors);
+    void spinMax(const intakeMotors& motor);
+    void spinMax(vex::motor& motor);
 
     // No motors specified -> spin all
     void spinMaxIn(void);
-    void spinMaxIn(const intakeMotors& motors...);
-    void spinMaxIn(const vex::motor& motors...);
-
-    void spinMax(void);
-    void spinMax(const intakeMotors& motors...);
-    void spinMax(const vex::motor& motors...);
+    void spinMaxIn(const std::vector<intakeMotors>& motors);
+    void spinMaxIn(std::vector<vex::motor>& motors);
+    void spinMaxIn(const intakeMotors& motor);
+    void spinMaxIn(vex::motor& motor);
 
     void spinMaxOut(void);
-    void spinMaxOut(const intakeMotors& motors...);
-    void spinMaxOut(const vex::motor& motors...);
+    void spinMaxOut(const std::vector<intakeMotors>& motors);
+    void spinMaxOut(std::vector<vex::motor>& motors);
+    void spinMaxOut(const intakeMotors& motor);
+    void spinMaxOut(vex::motor& motor);
 
     // No motors specified -> spin all
     void spinInVolts(const double& volts);
-    void spinInVolts(const double& volts, const intakeMotors& motors...);
-    void spinInVolts(const double& volts, const vex::motor& motors...);
+    void spinInVolts(const double& volts, const std::vector<intakeMotors>& motors);
+    void spinInVolts(const double& volts, std::vector<vex::motor>& motors);
+    void spinInVolts(const double& volts, const intakeMotors& motor);
+    void spinInVolts(const double& volts, vex::motor& motor);
 
     void spinOutVolts(const double& volts);
-    void spinOutVolts(const double& volts, const intakeMotors& motors...);
-    void spinOutVolts(const double& volts, const vex::motor& motors...);
+    void spinOutVolts(const double& volts, const std::vector<intakeMotors>& motors);
+    void spinOutVolts(const double& volts, std::vector<vex::motor>& motors);
+    void spinOutVolts(const double& volts, const intakeMotors& motor);
+    void spinOutVolts(const double& volts, vex::motor& motor);
 
     void spinInPct(const double& pct);
-    void spinInPct(const double& pct, const vex::motor& motors...);
-    void spinInPct(const double& pct, const intakeMotors& motors...);
+    void spinInPct(const double& pct, std::vector<vex::motor>& motors);
+    void spinInPct(const double& pct, const std::vector<intakeMotors>& motors);
+    void spinInPct(const double& pct, vex::motor& motor);
+    void spinInPct(const double& pct, const intakeMotors& motor);
 
     void spinOutPct(const double& pct);
-    void spinOutPct(const double& pct, const intakeMotors& motors...);
-    void spinOutPct(const double& pct, const vex::motor& motors...);
+    void spinOutPct(const double& pct, const std::vector<intakeMotors>& motors);
+    void spinOutPct(const double& pct, std::vector<vex::motor>& motors);
+    void spinOutPct(const double& pct, const intakeMotors& motor);
+    void spinOutPct(const double& pct, vex::motor& motor);
 
     // Default to brake mode to be consistent with drive
     void stopAll(void);
@@ -52,8 +62,12 @@ namespace intakes {
     // Default to brake mode to be consistent with drive
     void stop(void);
     void stop(const vex::brakeType& mode);
-    void stop(const intakeMotors& motors...);
-    void stop(const vex::motor& motors...);
-    void stop(const vex::brakeType& mode, const intakeMotors& motors...);
-    void stop(const vex::brakeType& mode, const vex::motor& motors...);
+    void stop(const std::vector<intakeMotors>& motors);
+    void stop(std::vector<vex::motor>& motors);
+    void stop(const vex::brakeType& mode, const std::vector<intakeMotors>& motors);
+    void stop(const vex::brakeType& mode, std::vector<vex::motor>& motors);
+    void stop(const intakeMotors& motor);
+    void stop(vex::motor& motor);
+    void stop(const vex::brakeType& mode, const intakeMotors& motors);
+    void stop(const vex::brakeType& mode, vex::motor& motors);
 }

@@ -3,55 +3,64 @@
 namespace trackingWheels {
     void resetPositions() {
         for (auto& i: allRotationSensors) {
-            i.resetPosition();
+            i->resetPosition();
         }
     }
 
-    void resetPositions(const trackingWheels& wheels...) {
-        for (auto& i: {wheels...}) {
-            wheelEnumToRotationSensors[i].resetPosition();
+    void resetPositions(const std::vector<trackingWheels>& wheels...) {
+        for (auto& i: wheels) {
+            wheelEnumToRotationSensor[i]->resetPosition();
         }
     }
 
-    void resetPositions(const vex::rotation& sensors...) {
-        for (auto& i: {sensors...}) {
+    void resetPositions(std::vector<vex::rotation>& sensors) {
+        for (auto& i: sensors){
             i.resetPosition();
         }
+    }
+    
+    void resetPositions(vex::rotation& sensor) {
+      sensor.resetPosition();
+    }
+
+    void resetPositions(const trackingWheels& wheel) {
+      wheelEnumToRotationSensor[wheel]->resetPosition();
     }
 
     double getPosition(const trackingWheels& wheel) {
-        return wheelEnumToRotationSensors[i].position(vex::deg);
+        return wheelEnumToRotationSensor[wheel]->position(vex::deg);
     }
 
-    double getPosition(const vex::rotation& sensor) {
+    double getPosition(vex::rotation& sensor) {
         return sensor.position(vex::deg);
     }
+
 
     double getAvgPosition(void) {
         double total = 0;
         for (auto& i: allRotationSensors) {
-            total += i.position(vex::deg);
+            total += i->position(vex::deg);
         }
 
         return total / allRotationSensors.size();
     }
 
-    double getAvgPosition(const trackingWheels& wheels...) {
-        constexpr int numOfWheels = sizeof...(wheels);
+    double getAvgPosition(const std::vector<trackingWheels>& wheels...) {
+        const int numOfWheels = wheels.size();
 
         double total = 0;
-        for (auto& i: {wheels...}) {
-            total += wheelEnumToRotationSensor[i].position(vex::deg);
+        for (auto& i: wheels) {
+            total += wheelEnumToRotationSensor[i]->position(vex::deg);
         }
 
         return total / numOfWheels;
     }
 
-    double getAvgPosition(const vex::rotation& sensors...) {
-        constexpr int numOfSensors = sizeof...(sensors);
+    double getAvgPosition(std::vector<vex::rotation>& sensors) {
+        const int numOfSensors = sensors.size();
 
         double total = 0;
-        for (auto& i: {sensors...}) {
+        for (auto& i: sensors) {
             total += i.position(vex::deg);
         }
         

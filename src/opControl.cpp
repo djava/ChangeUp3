@@ -11,8 +11,8 @@ void joystickControl() {
 
   const int leftJoystickValue = Controller1.Axis3.value();
   const int rightJoystickValue = Controller1.Axis2.value();
-  dt::spinInVolts(leftJoystickValue * valueToVoltCoeff, dt::E_SIDE_LEFT);
-  dt::spinInVolts(rightJoystickValue * valueToVoltCoeff, dt::E_SIDE_RIGHT);
+  dt::spinInVolts(leftJoystickValue * valueToVoltCoeff, dt::sides::left);
+  dt::spinInVolts(rightJoystickValue * valueToVoltCoeff, dt::sides::right);
 }
 
 void indexerControl() {
@@ -41,7 +41,6 @@ void shooterControl() {
     while (Controller1.ButtonL2.pressing()) {
       Shooter.spin(fwd, 13, volt);
       Indexer.spin(fwd, 100, pct);
-      intakeControl();
       joystickControl();
     }
   }
