@@ -3,13 +3,13 @@
 namespace trackingWheels {
     void resetPositions() {
         for (auto& i: allRotationSensors) {
-            i->resetPosition();
+            i.resetPosition();
         }
     }
 
     void resetPositions(const std::vector<trackingWheels>& wheels...) {
         for (auto& i: wheels) {
-            wheelEnumToRotationSensor[i]->resetPosition();
+            wheelEnumToRotationSensor.at(i).resetPosition();
         }
     }
 
@@ -24,11 +24,11 @@ namespace trackingWheels {
     }
 
     void resetPositions(const trackingWheels& wheel) {
-      wheelEnumToRotationSensor[wheel]->resetPosition();
+      wheelEnumToRotationSensor.at(wheel).resetPosition();
     }
 
     double getPosition(const trackingWheels& wheel) {
-        return wheelEnumToRotationSensor[wheel]->position(vex::deg);
+        return wheelEnumToRotationSensor.at(wheel).position(vex::deg);
     }
 
     double getPosition(vex::rotation& sensor) {
@@ -39,7 +39,7 @@ namespace trackingWheels {
     double getAvgPosition(void) {
         double total = 0;
         for (auto& i: allRotationSensors) {
-            total += i->position(vex::deg);
+            total += i.position(vex::deg);
         }
 
         return total / allRotationSensors.size();
@@ -50,7 +50,7 @@ namespace trackingWheels {
 
         double total = 0;
         for (auto& i: wheels) {
-            total += wheelEnumToRotationSensor[i]->position(vex::deg);
+            total += wheelEnumToRotationSensor.at(i).position(vex::deg);
         }
 
         return total / numOfWheels;

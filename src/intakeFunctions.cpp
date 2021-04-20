@@ -3,13 +3,13 @@
 namespace intakes {
   void spinMaxIn() {
     for (auto& i: allMotors) {
-      i->spin(vex::fwd, voltMax * directionCoeff, vex::volt);
+      i.spin(vex::fwd, voltMax * directionCoeff, vex::volt);
     }
   }
 
   void spinMaxIn(const std::vector<intakeMotors>& motors) {
     for (auto& i: motors) {
-      intakeEnumToMotor[i]->spin(vex::fwd, voltMax * directionCoeff, vex::volt);
+      intakeEnumToMotor.at(i).spin(vex::fwd, voltMax * directionCoeff, vex::volt);
     }
   }
 
@@ -24,7 +24,7 @@ namespace intakes {
   }
 
   void spinMaxIn(const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, voltMax * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, voltMax * directionCoeff, vex::volt);
   }
 
   void spinMax() {
@@ -49,13 +49,13 @@ namespace intakes {
 
   void spinMaxOut() {
     for (auto& i: allMotors) {
-      i->spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
+      i.spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
     }
   }
 
   void spinMaxOut(const std::vector<intakeMotors>& motors) {
     for (auto& i: motors) {
-      intakeEnumToMotor[i]->spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
+      intakeEnumToMotor.at(i).spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
     }
   }
 
@@ -66,7 +66,7 @@ namespace intakes {
   }
 
   void spinMaxOut(const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, -voltMax * directionCoeff, vex::volt);
   }
 
   void spinMaxOut(vex::motor& motor) {
@@ -75,13 +75,13 @@ namespace intakes {
 
   void spinInVolts(const double& volts) {
     for (auto& i: allMotors) {
-      i->spin(vex::fwd, volts * directionCoeff, vex::volt);
+      i.spin(vex::fwd, volts * directionCoeff, vex::volt);
     }
   }
 
   void spinInVolts(const double& volts, const std::vector<intakeMotors>& motors) {
     for (auto& i: motors) {
-      intakeEnumToMotor[i]->spin(vex::fwd, volts * directionCoeff, vex::volt);
+      intakeEnumToMotor.at(i).spin(vex::fwd, volts * directionCoeff, vex::volt);
     }
   }
 
@@ -92,7 +92,7 @@ namespace intakes {
   }
 
   void spinInVolts(const double& volts, const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, volts * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, volts * directionCoeff, vex::volt);
   }
 
   void spinInVolts(const double& volts, vex::motor& motor) {
@@ -101,13 +101,13 @@ namespace intakes {
 
   void spinOutVolts(const double& volts) {
     for (auto& i: allMotors) {
-      i->spin(vex::fwd, -volts * directionCoeff, vex::volt);
+      i.spin(vex::fwd, -volts * directionCoeff, vex::volt);
     }
   }
 
   void spinOutVolts(const double& volts, const std::vector<intakeMotors>& motors) {
     for (auto& i: motors) {
-      intakeEnumToMotor[i]->spin(vex::fwd, -volts * directionCoeff, vex::volt);
+      intakeEnumToMotor.at(i).spin(vex::fwd, -volts * directionCoeff, vex::volt);
     }
   }
 
@@ -118,7 +118,7 @@ namespace intakes {
   }
 
   void spinOutVolts(const double& volts, const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, -volts * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, -volts * directionCoeff, vex::volt);
   }
 
   void spinOutVolts(const double& volts, vex::motor& motor) {
@@ -127,13 +127,13 @@ namespace intakes {
 
   void spinInPct(const double& pct) {
     for (auto& i: allMotors) {
-        i->spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+        i.spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
     }
   }
 
   void spinInPct(const double& pct, const std::vector<intakeMotors>& motors) {
     for (auto& i: motors) {
-        intakeEnumToMotor[i]->spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+        intakeEnumToMotor.at(i).spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
     }
   }
 
@@ -144,7 +144,7 @@ namespace intakes {
   }
 
   void spinInPct(const double& pct, const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, pct * pctToVoltsCoeff * directionCoeff, vex::volt);
   }
 
   void spinInPct(const double& pct, vex::motor& motor) {
@@ -153,13 +153,13 @@ namespace intakes {
 
   void spinOutPct(const double& pct) {
     for (auto& i: allMotors) {
-      i->spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+      i.spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
     }
   }
 
   void spinOutPct(const double& pct, const std::vector<intakeMotors>& motors) {
       for (auto& i: motors) {
-        intakeEnumToMotor[i]->spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+        intakeEnumToMotor.at(i).spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
       }
   }
 
@@ -170,7 +170,7 @@ namespace intakes {
   }
 
   void spinOutPct(const double& pct, const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
+    intakeEnumToMotor.at(motor).spin(vex::fwd, -pct * pctToVoltsCoeff * directionCoeff, vex::volt);
   }
 
   void spinOutPct(const double& pct, vex::motor& motor) {
@@ -179,13 +179,13 @@ namespace intakes {
 
   void stopAll() {
       for (auto& i: allMotors) {
-          i->stop(vex::brake);
+          i.stop(vex::brake);
       }
   }
 
   void stopAll(const vex::brakeType& mode) {
       for (auto& i: allMotors) {
-          i->stop(mode);
+          i.stop(mode);
       }
   }
 
@@ -199,7 +199,7 @@ namespace intakes {
 
   void stop(const std::vector<intakeMotors>& motors) {
       for (auto& i: motors) {
-          intakeEnumToMotor[i]->stop(vex::brake);
+          intakeEnumToMotor.at(i).stop(vex::brake);
       }
   }
 
@@ -211,7 +211,7 @@ namespace intakes {
 
   void stop(const vex::brakeType& mode, const std::vector<intakeMotors>& motors) {
       for (auto& i: motors) {
-          intakeEnumToMotor[i]->stop(mode);
+          intakeEnumToMotor.at(i).stop(mode);
       }
   }
 
@@ -222,7 +222,7 @@ namespace intakes {
   }
 
   void stop(const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->stop(vex::brake);
+    intakeEnumToMotor.at(motor).stop(vex::brake);
   }
 
   void stop(vex::motor& motor) {
@@ -230,7 +230,7 @@ namespace intakes {
   }
 
   void stop(const vex::brakeType& mode, const intakeMotors& motor) {
-    intakeEnumToMotor[motor]->stop(mode);
+    intakeEnumToMotor.at(motor).stop(mode);
   }
 
   void stop(const vex::brakeType& mode, vex::motor& motor) {

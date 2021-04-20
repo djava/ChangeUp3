@@ -22,20 +22,20 @@ namespace drivetrain {
         right
     } sides;
 
-    static std::map<driveMotors, vex::motor*> motorEnumToMotor {
-        {motors::backLeft, &BackLeftDrive},
-        {motors::backRight, &BackRightDrive},
-        {motors::frontLeft, &FrontLeftDrive},
-        {motors::frontRight, &FrontRightDrive}
+    static std::map<driveMotors, vex::motor> motorEnumToMotor {
+        {motors::backLeft, BackLeftDrive},
+        {motors::backRight, BackRightDrive},
+        {motors::frontLeft, FrontLeftDrive},
+        {motors::frontRight, FrontRightDrive}
     };
 
-    static std::map<driveSides, std::vector<vex::motor*>> sideEnumToMotors {
-        {sides::left, {&BackLeftDrive, &FrontLeftDrive}},
-        {sides::right, {&BackRightDrive, &FrontRightDrive}}
+    static std::map<driveSides, std::vector<vex::motor>> sideEnumToMotors {
+        {sides::left, {BackLeftDrive, FrontLeftDrive}},
+        {sides::right, {BackRightDrive, FrontRightDrive}}
     };
 
-    static std::vector<vex::motor*> allMotors {
-        &BackLeftDrive, &BackRightDrive, &FrontLeftDrive, &BackRightDrive
+    static std::vector<vex::motor> allMotors {
+        BackLeftDrive, BackRightDrive, FrontLeftDrive, BackRightDrive
     };
 }
 
@@ -48,13 +48,13 @@ namespace trackingWheels {
         right
     } wheels;
 
-    static std::map<trackingWheels, vex::rotation*> wheelEnumToRotationSensor {
-        {wheels::left, &LeftRotation},
-        {wheels::right, &RightRotation}
+    static std::map<trackingWheels, vex::rotation> wheelEnumToRotationSensor {
+        {wheels::left, LeftRotation},
+        {wheels::right, RightRotation}
     };
 
-    static std::vector<vex::rotation*> allRotationSensors {
-        &RightRotation, &LeftRotation
+    static std::vector<vex::rotation> allRotationSensors {
+        RightRotation, LeftRotation
     };
 }
 
@@ -66,12 +66,12 @@ namespace intakes {
         right
     } motors;
 
-    static std::map<intakeMotors, vex::motor*> intakeEnumToMotor {
-        {motors::left, &LeftIntake},
-        {motors::right, &RightIntake}
+    static std::map<intakeMotors, vex::motor> intakeEnumToMotor {
+        {motors::left, LeftIntake},
+        {motors::right, RightIntake}
     };
 
-    static std::vector<vex::motor*> allMotors {
-        &LeftIntake, &RightIntake
+    static std::vector<vex::motor> allMotors {
+        LeftIntake, RightIntake
     };
 }
