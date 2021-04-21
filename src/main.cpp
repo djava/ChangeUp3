@@ -1,3 +1,21 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BackLeftDrive        motor         1               
+// BackRightDrive       motor         4               
+// FrontLeftDrive       motor         11              
+// FrontRightDrive      motor         20              
+// Shooter              motor         8               
+// Indexer              motor         15              
+// Inertial             inertial      2               
+// LeftIntake           motor         3               
+// RightIntake          motor         13              
+// LeftRotation         rotation      12              
+// RightRotation        rotation      10              
+// LineSensor           line          B               
+// Limit                limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */

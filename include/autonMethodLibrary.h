@@ -8,21 +8,22 @@
 #include "drivetrain.h"
 #include "trackingWheels.h"
 
-typedef enum turnDirection {
-    E_TURN_DIRECTION_LEFT,
-    E_TURN_DIRECTION_RIGHT
-} autonTurnDirection;
+typedef enum class turnDirection {
+    left,
+    right,
+    none
+} turnDirection;
 
 void turnCurve(const double& targetDistance, const double& leftSpeed, const double& rightSpeed);
 void testLinearEquation(double targetDistance, int maxSpeed);
-void turn(const autonTurnDirection& direction, const double& degrees);
+void turn(const turnDirection& direction, const double& degrees);
 void dropLinearEquation(double targetDistance, int maxSpeed);
 void positionTracking();
-void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double kP, double kD, double minSpeed, double errorMargin);
+void goTo(double finalX, double finalY, turnDirection turnDirection, double kP, double kD, double minSpeed, double errorMargin);
 void backLinear(double targetDistance, double minSpeed, double kP);
-void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP, double kD, 
+void IgnoreX(double finalX, double finalY, const turnDirection& turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);
-void IgnoreY(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP, double kD, 
+void IgnoreY(double finalX, double finalY, const turnDirection& turnDirection, double kP, double kD, 
               double minSpeed, double errorMargin);
 void setCoordinates(int changeNumber);
 

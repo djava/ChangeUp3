@@ -119,7 +119,7 @@ void positionTracking() {
   curve function.)
  */
 
-void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double kP = 0.4,
+void goTo(double finalX, double finalY, turnDirection turnDirection, double kP = 0.4,
           double kD = 0.6, double minSpeed = 15.0, double errorMargin = 0.25) {
 
   double changeX = finalX - globalX;
@@ -165,13 +165,14 @@ void goTo(double finalX, double finalY, autonTurnDirection turnDirection, double
   dt::stopAll();
 }
 
-void turn(const autonTurnDirection& direction, const double& degrees) {
+void turn(const turnDirection& direction, const double& degrees) {
   constexpr double kP = 0.45;
   constexpr double kD = 2.5;
   constexpr double flatTurnValue = 3.4;
 
+  if (direction == turnDirection::none) return;
   // Multiply voltages by this to turn left or right, -1 -> left, 1 -> right
-  int directionCoeff = direction == E_TURN_DIRECTION_LEFT ? -1 : 1;
+  int directionCoeff = direction == turnDirection::left ? -1 : 1;
 
   // Add 360 to prevent negatives (break the mod), add 90 for shift to match
   // up with the polar coordinate system
@@ -244,7 +245,7 @@ void backCurve(double targetDistance, double minSpeed, double kP, double leftSpe
   dt::stopAll();
 }
 
-void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP,
+void IgnoreX(double finalX, double finalY, const turnDirection& turnDirection, double kP,
              double kD, double minSpeed, double errorMargin) {
   constexpr double radToDegCoeff = 180.0 / M_PI;
   constexpr double pctToVoltCoeff = 12.0 / 100.0;
@@ -285,7 +286,7 @@ void IgnoreX(double finalX, double finalY, const autonTurnDirection& turnDirecti
   dt::stopAll();
 }
 
-void IgnoreY(double finalX, double finalY, const autonTurnDirection& turnDirection, double kP,
+void IgnoreY(double finalX, double finalY, const turnDirection& turnDirection, double kP,
              double kD, double minSpeed, double errorMargin) {
   constexpr double radToDegCoeff = 180.0 / M_PI;
   constexpr double pctToVoltCoeff = 12.0 / 100.0;
