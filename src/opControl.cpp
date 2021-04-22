@@ -5,6 +5,8 @@ using namespace vex;
 namespace dt = drivetrain;
 
 #include "lib/units/units.h"
+using namespace lib;
+
 
 int flywheelToggle;
 
