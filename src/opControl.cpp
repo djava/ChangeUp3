@@ -4,13 +4,10 @@
 using namespace vex;
 namespace dt = drivetrain;
 
-#include "lib/units/units.h"
-using namespace lib;
-
-
 int flywheelToggle;
 
 void joystickControl() {
+
   constexpr double valueToVoltCoeff = 12.0 / 127.0;
 
   const int leftJoystickValue = Controller1.Axis3.value();
