@@ -12,23 +12,24 @@
 #include "lib/units/RQuantity.h"
 
 namespace lib {
-QUANTITY_TYPE(1, 2, -3, 0, QVoltage)
+QUANTITY_TYPE(0, 0, 0, 0, QPercent)
 
-constexpr QVoltage volt(1.0); // SI base unit
-constexpr QVoltage millivolt = 0.001 * volt;
+constexpr QPercent percent(1.0); // SI base unit
+constexpr QPercent proportion = 0.01 * percent;
 
 inline namespace literals {
-constexpr QVoltage operator"" _v(long double x) {
-  return QVoltage(x);
+constexpr QPercent operator"" _pct(long double x) {
+  return QPercent(x);
 }
-constexpr QVoltage operator"" _mv(long double x) {
-  return static_cast<double>(x) * millivolt;
+constexpr QPercent operator"" _ppt(long double x) {
+  return static_cast<double>(x) * proportion;
 }
-constexpr QVoltage operator"" _v(unsigned long long int x) {
-  return QVoltage(static_cast<double>(x));
+constexpr QPercent operator"" _pct(unsigned long long int x) {
+  return QPercent(static_cast<double>(x));
 }
-constexpr QVoltage operator"" _mv(unsigned long long int x) {
-  return static_cast<double>(x) * millivolt;
+constexpr QPercent operator"" _ppt(unsigned long long int x) {
+  return static_cast<double>(x) * proportion;
 }
+
 } // namespace literals
 } // namespace okapi

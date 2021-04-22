@@ -14,11 +14,8 @@ namespace HAL {
     {brakeMode::hold, vex::hold}
   };
 
-  motor::motor(const int& port, const motorCart& cartridge = motorCart::green_200RPM, const bool& reversed = false) 
-    : cartridge{cartridge},
-      reversed{reversed},
-      vexMotor{vex::motor (port, HALEnumToVexCart.at(cartridge), reversed)},
-      port{port} { }
+  motor::motor(const int& port, const motorCart& cartridge = motorCart::green_200RPM) 
+    : vexMotor{vex::motor (port, HALEnumToVexCart.at(cartridge))} { }
 
   void motor::spinMillivolts(const double& millivolts) {
     vexMotor.spin(vex::fwd, millivolts, vex::voltageUnits::mV);

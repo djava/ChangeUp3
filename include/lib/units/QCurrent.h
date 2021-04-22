@@ -12,23 +12,23 @@
 #include "lib/units/RQuantity.h"
 
 namespace lib {
-QUANTITY_TYPE(1, 2, -3, 0, QVoltage)
+QUANTITY_TYPE(0, 0, 0, 0, QCurrent)
 
-constexpr QVoltage volt(1.0); // SI base unit
-constexpr QVoltage millivolt = 0.001 * volt;
+constexpr QCurrent amp(1.0); // SI base unit
+constexpr QCurrent milliamp = 0.001 * amp;
 
 inline namespace literals {
-constexpr QVoltage operator"" _v(long double x) {
-  return QVoltage(x);
+constexpr QCurrent operator"" _a(long double x) {
+  return QCurrent(x);
 }
-constexpr QVoltage operator"" _mv(long double x) {
-  return static_cast<double>(x) * millivolt;
+constexpr QCurrent operator"" _ma(long double x) {
+  return static_cast<double>(x) * milliamp;
 }
-constexpr QVoltage operator"" _v(unsigned long long int x) {
-  return QVoltage(static_cast<double>(x));
+constexpr QCurrent operator"" _a(unsigned long long int x) {
+  return QCurrent(static_cast<double>(x));
 }
-constexpr QVoltage operator"" _mv(unsigned long long int x) {
-  return static_cast<double>(x) * millivolt;
+constexpr QCurrent operator"" _ma(unsigned long long int x) {
+  return static_cast<double>(x) * milliamp;
 }
 } // namespace literals
 } // namespace okapi

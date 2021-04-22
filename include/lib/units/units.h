@@ -17,3 +17,5 @@
 #include "lib/units/QTorque.h"
 #include "lib/units/QVolume.h"
 #include "lib/units/QVoltage.h"
+#include "lib/units/QPercent.h"
+#include "lib/units/QTemperature.h"
