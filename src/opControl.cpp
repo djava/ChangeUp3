@@ -4,6 +4,8 @@
 using namespace vex;
 namespace dt = drivetrain;
 
+#include "lib/units/units.h"
+
 int flywheelToggle;
 
 void joystickControl() {
