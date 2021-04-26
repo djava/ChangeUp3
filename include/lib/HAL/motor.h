@@ -2,8 +2,7 @@
 #include "lib/HAL/APIHeader.h"
 #include <map>
 
-namespace lib {
-namespace HAL {
+namespace lib::HAL {
   enum class motorCart {
     red_100RPM,
     green_200RPM,
@@ -46,5 +45,4 @@ namespace HAL {
       double getEfficiency();
       double getTemperatureDegC();
   };
-}
 }
