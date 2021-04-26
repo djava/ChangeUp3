@@ -1,5 +1,5 @@
 #pragma once
-#include "vex.h"
+#include "lib/HAL/APIHeader.h"
 #include <map>
 
 namespace lib {
@@ -18,9 +18,15 @@ namespace HAL {
 
   class motor {
     private:
+      #ifdef IS_VEXCODE
       vex::motor vexMotor;
       static const std::map<motorCart, vex::gearSetting> HALEnumToVexCart;
       static const std::map<brakeMode, vex::brakeType> HALEnumToVexBrakeMode;
+      #else
+      pros::Motor vexMotor;
+      static const std::map<motorCart, pros::motor_gearset_e_t> HALEnumToVexCart;
+      static const std::map<brakeMode, pros::motor_brake_mode_e_t> HALEnumToVexBrakeMode;
+      #endif
 
     public:
       motor(const int& port, const motorCart& cartridge);

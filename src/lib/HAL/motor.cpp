@@ -2,6 +2,7 @@
 
 namespace lib {
 namespace HAL {
+  #ifdef IS_VEXCODE
   const std::map<motorCart, vex::gearSetting> motor::HALEnumToVexCart {
     {motorCart::red_100RPM, vex::ratio36_1},
     {motorCart::green_200RPM, vex::ratio18_1},
@@ -60,5 +61,7 @@ namespace HAL {
   double motor::getTemperatureDegC() {
     return vexMotor.temperature(vex::celsius);
   }
+  #else
+  #endif
 }
 }
