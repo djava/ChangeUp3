@@ -1,3 +1,4 @@
 #pragma once
 
-#include "motor.h"
+#include "lib/HAL/motor.h"
+#include "lib/HAL/controller.h"
