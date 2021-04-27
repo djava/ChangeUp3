@@ -1,4 +1,5 @@
 #include "main.h"
+#include "lib/units/QTorque.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -53,5 +54,14 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+ #include "lib/event.h"
+ #include "lib/motor.h"
+ #include "lib/units/units.h"
+ using namespace lib;
+ using namespace eventTriggerFactory;
 void opcontrol() {
+    lib::motor drive1 (1);
+
+    typedef std::less<> less;
+    funcCmp<less>([&]{return drive1.getTorque();}, 7_nM);
 }

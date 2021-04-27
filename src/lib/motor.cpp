@@ -8,10 +8,10 @@
 
 namespace lib {
     motor::motor(const int& port,
-                 const motorCart& cartridge = motorCart::green_200RPM,
-                 const bool& reversed = false,
-                 const brakeMode& currentBrakeMode = brakeMode::coast,
-                 const std::string& nickname = ""
+                 const motorCart& cartridge,
+                 const bool& reversed ,
+                 const brakeMode& currentBrakeMode,
+                 const std::string& nickname
     ) : HALMotor{HAL::motor(port, cartridge)}, cartridge{cartridge}, port{port},
         reversed{reversed}, currentBrakeMode(currentBrakeMode), nickname{nickname} { }
 

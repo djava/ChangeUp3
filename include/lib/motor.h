@@ -20,8 +20,11 @@ namespace lib {
         brakeMode currentBrakeMode;
         std::string nickname;
 
-        motor(const int& port, const motorCart& cartridge, const bool& reversed,
-                    const brakeMode& currentBrakeMode, const std::string& nickname);
+        motor(const int& port,
+                 const motorCart& cartridge = motorCart::green_200RPM,
+                 const bool& reversed = false,
+                 const brakeMode& currentBrakeMode = brakeMode::coast,
+                 const std::string& nickname = "");
 
         void spin(const QVoltage& voltage);
         void spin(const QAngularSpeed& velocity);
