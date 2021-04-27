@@ -21,6 +21,10 @@ namespace lib::HAL {
   void motor::spinMillivolts(const double& millivolts) {
     vexMotor.spin(vex::fwd, millivolts, vex::voltageUnits::mV);
   }
+  
+  void motor::spinRPM(const double& rpm) {
+    vexMotor.spin(vex::fwd, rpm, vex::velocityUnits::rpm);
+  }
 
   void motor::spinToPosDegRPM(const double& degrees, const double& velocity) {
     vexMotor.spinToPosition(degrees, vex::deg, velocity, vex::rpm);
@@ -81,6 +85,10 @@ namespace lib::HAL {
 
   void motor::spinMillivolts(const double& millivolts) {
     vexMotor.move_voltage(millivolts);
+  }
+
+  void motor::spinRPM(const double& rpm) {
+    vexMotor.move_velocity(static_cast<int>(rpm));
   }
 
   void motor::spinToPosDegRPM(const double& degrees, const double& velocity) {

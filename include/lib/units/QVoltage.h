@@ -21,13 +21,13 @@ inline namespace literals {
 constexpr QVoltage operator"" _v(long double x) {
   return QVoltage(x);
 }
-constexpr QVoltage operator"" _mv(long double x) {
+constexpr QVoltage operator"" _mV(long double x) {
   return static_cast<double>(x) * millivolt;
 }
 constexpr QVoltage operator"" _v(unsigned long long int x) {
   return QVoltage(static_cast<double>(x));
 }
-constexpr QVoltage operator"" _mv(unsigned long long int x) {
+constexpr QVoltage operator"" _mV(unsigned long long int x) {
   return static_cast<double>(x) * millivolt;
 }
 } // namespace literals
