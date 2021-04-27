@@ -332,71 +332,71 @@ constexpr RQuantity<M, L, T, A> round(const RQuantity<M, L, T, A> &lhs,
 // Common trig functions:
 // ------------------------------
 
-const Number
-sin(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::sin(rhs.getValue()));
-}
+// const Number
+// sin(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::sin(rhs.getValue()));
+// }
 
-const Number
-cos(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::cos(rhs.getValue()));
-}
+// const Number
+// cos(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::cos(rhs.getValue()));
+// }
 
-const Number
-tan(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::tan(rhs.getValue()));
-}
+// const Number
+// tan(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::tan(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-asin(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::asin(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// asin(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::asin(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-acos(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::acos(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// acos(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::acos(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-atan(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::atan(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// atan(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::atan(rhs.getValue()));
+// }
 
-const Number
-sinh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::sinh(rhs.getValue()));
-}
+// const Number
+// sinh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::sinh(rhs.getValue()));
+// }
 
-const Number
-cosh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::cosh(rhs.getValue()));
-}
+// const Number
+// cosh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::cosh(rhs.getValue()));
+// }
 
-const Number
-tanh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
-  return Number(std::tanh(rhs.getValue()));
-}
+// const Number
+// tanh(const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> &rhs) {
+//   return Number(std::tanh(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-asinh(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::asinh(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// asinh(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::asinh(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-acosh(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::acosh(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// acosh(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::acosh(rhs.getValue()));
+// }
 
-const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
-atanh(const Number &rhs) {
-  return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
-    std::atanh(rhs.getValue()));
-}
+// const RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
+// atanh(const Number &rhs) {
+//   return RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>(
+//     std::atanh(rhs.getValue()));
+// }
 
 template <typename M, typename L, typename T, typename A>
 constexpr RQuantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>
