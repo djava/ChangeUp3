@@ -58,10 +58,9 @@ void autonomous() {}
  #include "lib/motor.h"
  #include "lib/units/units.h"
  using namespace lib;
- using namespace eventTriggerFactory;
+ using namespace lib::triggerFactory;
 void opcontrol() {
     lib::motor drive1 (1);
 
-    typedef std::less<> less;
-    funcCmp<less>([&]{return drive1.getTorque();}, 7_nM);
+    cmpTrigger<equal>(memberBind(drive1, getTorque), 43_nM);
 }

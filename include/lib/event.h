@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <type_traits>
 #include <vector>
 #include <functional>
@@ -27,17 +28,41 @@ namespace lib {
         std::function<void(void)> trigger = effectFunction;
 
         static void taskTriggerFunction();
-
-        
     };
 
-    namespace eventTriggerFactory {
-        template <typename C, typename F, typename B, typename = std::enable_if_t<std::is_invocable_v<F>>>
-        auto funcCmp(F&& func, B&& val) {
-            C cmp{}; 
-            return [func = std::forward<F>(func), val = std::forward<B>(val), cmp{std::move(cmp)}] {
-                return cmp(func(), val);
-            };
+    namespace triggerFactory {
+        using less = std::less<>;
+        using greater = std::greater<>;
+        using less_equal = std::less_equal<>;
+        using greater_equal = std::greater_equal<>;
+        using equal = std::equal_to<>;
+        using not_equal = std::not_equal_to<>;
+
+        #define memberBind(obj, func) std::bind(&decltype(obj)::func, &obj)
+
+        template <typename C, typename A, typename B,
+                  typename std::enable_if_t<std::is_invocable_v<A> && std::is_invocable_v<B>>* = nullptr>
+        auto cmpTrigger(A&& a, B&& b) {
+            return [a = std::forward<A>(a), b = std::forward<B>(b), cmp{C {}}] { return cmp(a(), b()); };
         }
-    }
-}
+        
+        template <typename C, typename A, typename B,
+                  typename std::enable_if_t<std::is_invocable_v<A> && !std::is_invocable_v<B>>* = nullptr>
+        auto cmpTrigger(A&& a, B&& b) {
+            return [a = std::forward<A>(a), b = std::forward<B>(b), cmp{C {}}] { return cmp(a(), b); };
+        }
+
+        template <typename C, typename A, typename B,
+                  typename std::enable_if_t<!std::is_invocable_v<A> && std::is_invocable_v<B>>* = nullptr>
+        auto cmpTrigger(A&& a, B&& b) {
+            return [a = std::forward<A>(a), b = std::forward<B>(b), cmp{C {}}] { return cmp(a, b()); };
+        }
+        
+        template <typename C, typename A, typename B,
+                  typename std::enable_if_t<!std::is_invocable_v<A> && !std::is_invocable_v<B>>* = nullptr>
+        auto cmpTrigger(A&& a, B&& b) {
+            return [a = std::forward<A>(a), b = std::forward<B>(b), cmp{C {}}] { return cmp(a, b); };
+        }
+
+    } // namespace triggerFactory
+} // namespace lib
