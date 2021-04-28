@@ -1,12 +1,21 @@
 #include "main.h"
 #include "lib/units/QTorque.h"
 
+ #include "lib/event.h"
+ #include "lib/motor.h"
+ #include "lib/units/units.h"
+ using namespace lib;
+ using namespace lib::triggers;
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+
+pros::Task eventTask(lib::event::taskTriggerFunction);
+
 void initialize() {
 }
 
@@ -54,13 +63,9 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
- #include "lib/event.h"
- #include "lib/motor.h"
- #include "lib/units/units.h"
- using namespace lib;
- using namespace lib::triggerFactory;
 void opcontrol() {
     lib::motor drive1 (1);
 
-    cmpTrigger<equal>(memberBind(drive1, getTorque), 43_nM);
+    auto x = event(risingEdgeFilter(cmpTrigger<greater_equal>(memberBind(drive1, getTorque), 43_nM)),
+                   memberBindArgs(drive1, stop, brakeMode::brake));
 }

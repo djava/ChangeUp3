@@ -9,16 +9,18 @@ namespace lib {
     class event {
     private:
         static std::vector<event> allEvents;
+        static unsigned long long globalIdCounter;
         
         std::function<bool(void)> triggerFunction;
         std::function<void(void)> effectFunction;
+        unsigned long long id;
     
     public:
         std::string nickname;
 
         event(const std::function<bool(void)>& triggerFunction,
               const std::function<void(void)>& effectFunction,
-              const std::string& nickname);
+              const std::string& nickname = "");
 
         ~event();
 
@@ -27,6 +29,8 @@ namespace lib {
         bool operator==(const event& b);
 
         std::function<void(void)> trigger = effectFunction;
+
+        void remove();
 
         static void taskTriggerFunction();
     };
@@ -40,6 +44,7 @@ namespace lib {
         using not_equal = std::not_equal_to<>;
 
         #define memberBind(obj, func) std::bind(&decltype(obj)::func, &obj)
+        #define memberBindArgs(obj, func, ...) std::bind(&decltype(obj)::func, &obj, __VA_ARGS__)
 
         template <typename C, typename A, typename B,
                   typename std::enable_if_t<std::is_invocable_v<A> && std::is_invocable_v<B>>* = nullptr>
