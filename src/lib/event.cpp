@@ -1,4 +1,5 @@
 #include "lib/event.h"
+#include "main.h"
 
 namespace lib {
     std::vector<event> event::allEvents {};
@@ -32,10 +33,14 @@ namespace lib {
     }
 
     void event::taskTriggerFunction() {
-        for (auto& i: allEvents) {
-            if (i.triggerFunction()) {
-                i.effectFunction();
+        while (true) {
+            for (auto& i: allEvents) {
+                if (i.triggerFunction()) {
+                    i.effectFunction();
+                }
             }
+            //TODO: remove dependency on pros::delay
+            pros::delay(20);
         }
     }
 }

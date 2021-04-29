@@ -1,10 +1,5 @@
 #include "lib/motor.h"
-#include "lib/units/QAngle.h"
-#include "lib/units/QAngularSpeed.h"
-#include "lib/units/QPercent.h"
-#include "lib/units/QTemperature.h"
-#include "lib/units/QTorque.h"
-#include "lib/units/QVoltage.h"
+#include "lib/units/units.h"
 
 namespace lib {
     motor::motor(const int& port,

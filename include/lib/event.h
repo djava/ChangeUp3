@@ -97,7 +97,7 @@ namespace lib {
         }
 
         inline namespace filters {
-            template <typename A, typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr>
+            template <typename A, typename = std::enable_if_t<std::is_invocable_v<A>>*>
             auto risingEdgeFilter(A&& a) {
                 return [a = std::forward<A>(a)]{ 
                     static bool on = false;
@@ -106,7 +106,7 @@ namespace lib {
                 };
             }
             
-            template <typename A, typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr>
+            template <typename A, typename = std::enable_if_t<std::is_invocable_v<A>>>
             auto fallingEdgeFilter(A&& a) {
                 return [a = std::forward<A>(a)]{ 
                     static bool on = false;
