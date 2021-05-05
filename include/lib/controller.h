@@ -2,8 +2,6 @@
 #include "lib/HAL/HAL.h"
 #include "lib/units/units.h"
 #include "lib/APIWrappers.h"
-#include <cstdio>
-#include <memory>
 #include <queue>
 #include <functional>
 #include <sstream>
