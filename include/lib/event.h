@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include <functional>
+#include "lib/memberBind.h"
 
 namespace lib {
     class event {
@@ -42,9 +43,6 @@ namespace lib {
         using greater_equal = std::greater_equal<>;
         using equal = std::equal_to<>;
         using not_equal = std::not_equal_to<>;
-
-        #define memberBind(obj, func) std::bind(&decltype(obj)::func, &obj)
-        #define memberBindArgs(obj, func, ...) std::bind(&decltype(obj)::func, &obj, __VA_ARGS__)
 
         template <typename C, typename A, typename B,
                   typename std::enable_if_t<std::is_invocable_v<A> && std::is_invocable_v<B>>* = nullptr>

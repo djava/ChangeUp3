@@ -1,6 +1,6 @@
 #include "lib/controller.h"
-#include "lib/units/QPercent.h"
 #include "lib/units/units.h"
+#include "lib/APIWrappers.h"
 #include "pros/rtos.hpp"
 
 namespace lib {
@@ -14,8 +14,7 @@ namespace lib {
                 HALController.print(obj.row, obj.col, obj.text);
                 printQueue.pop();
             }
-            //TODO: remove dependency on pros::delay
-            pros::delay(55);
+            lib::delay(55_ms);
         }
     }
 

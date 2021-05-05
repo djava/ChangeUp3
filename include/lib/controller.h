@@ -1,7 +1,9 @@
 #pragma once
 #include "lib/HAL/HAL.h"
 #include "lib/units/units.h"
+#include "lib/APIWrappers.h"
 #include <cstdio>
+#include <memory>
 #include <queue>
 #include <functional>
 #include <sstream>
@@ -11,7 +13,6 @@ namespace lib {
     using HAL::controllerButtons;
     using HAL::joystickAxes;
     using HAL::controllerTypes;
-
     class controller {
     private:
         typedef struct printObj { int row; int col; std::string text; } printObj;
@@ -24,9 +25,9 @@ namespace lib {
         std::queue<printObj> printQueue {};
 
         void printTaskFn();
-        //TODO: HAL::task wrapper to remove PROS dependency in main lib
-        pros::Task printTask = pros::Task([&]{this->printTaskFn();});
-    
+        std::unique_ptr<lib::task> printTask = std::make_unique<lib::task>(
+                        lib::task([&]{this->printTaskFn();}, lib::task::normalPriority - 2, "Controller Print Task"));
+
     public:
         controller(const controllerTypes& type);
 

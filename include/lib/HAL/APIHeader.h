@@ -1,11 +1,7 @@
-#ifndef VexV5
-    #define IS_PROS
-#else
+#ifdef VexV5
     #define IS_VEXCODE
-#endif
-
-#ifdef IS_PROS
-    #include "main.h"
-#else
     #include "vex.h"
+#else
+    #define IS_PROS
+    #include "main.h"
 #endif

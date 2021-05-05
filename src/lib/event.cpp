@@ -1,4 +1,5 @@
 #include "lib/event.h"
+#include "lib/APIWrappers.h"
 #include "main.h"
 
 namespace lib {
@@ -39,8 +40,7 @@ namespace lib {
                     i.effectFunction();
                 }
             }
-            //TODO: remove dependency on pros::delay
-            pros::delay(20);
+            lib::delay(20_ms);
         }
     }
 }
