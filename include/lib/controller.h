@@ -24,7 +24,7 @@ namespace lib {
 
         void printTaskFn();
         std::unique_ptr<lib::task> printTask = std::make_unique<lib::task>(
-                        lib::task([&]{this->printTaskFn();}, lib::task::normalPriority - 2, "Controller Print Task"));
+                        [&]{this->printTaskFn();}, lib::task::normalPriority - 2, "Controller Print Task");
 
     public:
         controller(const controllerTypes& type);

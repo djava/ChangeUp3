@@ -2,7 +2,6 @@
 #include "lib/HAL/APIHeader.h"
 #include "lib/memberBind.h"
 #include "lib/units/units.h"
-#include "pros/rtos.h"
 #include <type_traits>
 
 namespace lib {
@@ -39,7 +38,7 @@ namespace lib {
             pros::Task(function, priority, TASK_STACK_DEPTH_DEFAULT, name.c_str())
         #elif defined(IS_VEXCODE)
             vex::Task([](void* parameters) {
-                std::unique_ptr<std::function<void()>> ptr{static_cast<std::function<void()>*>(parameters)};
+                std::unique_ptr<std::function<void()>> ptr {static_cast<std::function<void()>*>(parameters)};
                 (*ptr)();
             },
             new std::function<void()>(std::forward<F>(function)), priority)
@@ -53,7 +52,7 @@ namespace lib {
             pros::Task(function, name.c_str())
         #elif defined(IS_VEXCODE)
             vex::Task([](void* parameters) {
-                std::unique_ptr<std::function<void()>> ptr{static_cast<std::function<void()>*>(parameters)};
+                std::unique_ptr<std::function<void()>> ptr {static_cast<std::function<void()>*>(parameters)};
                 (*ptr)();
             },
             new std::function<void()>(std::forward<F>(function)))

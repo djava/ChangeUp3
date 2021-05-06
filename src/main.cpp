@@ -1,7 +1,9 @@
 #include "main.h"
 
+#include "lib/HAL/controller.h"
  #include "lib/event.h"
  #include "lib/motor.h"
+ #include "lib/controller.h"
  #include "lib/units/units.h"
  using namespace lib;
  using namespace lib::triggers;
@@ -12,8 +14,6 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-
-pros::Task eventTask(lib::event::taskTriggerFunction);
 
 void initialize() {
 }
@@ -64,7 +64,8 @@ void autonomous() {}
  */
 void opcontrol() {
     lib::motor drive1 (1);
+    lib::controller contmaster (lib::controllerTypes::master);
 
     auto x = event(risingEdgeFilter(cmpTrigger<greater_equal>(memberBind(drive1, getTorque), 43_nM)),
-                   memberBindArgs(drive1, stop, brakeMode::brake));
+                   [&]{ drive1.spin(contmaster.getAxisPct(joystickAxes::leftX)); });
 }

@@ -5,7 +5,9 @@
 namespace lib {
     std::vector<event> event::allEvents {};
 
-    unsigned long long event::globalIdCounter = 0;
+    lib::task event::eventTriggerTask = lib::task(taskTriggerFunction,
+                                                  lib::task::normalPriority + 1,
+                                                  "Event Triggers");
 
     event::event(const std::function<bool(void)>& triggerFunction,
                  const std::function<void(void)>& effectFunction,

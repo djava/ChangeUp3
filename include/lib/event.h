@@ -5,17 +5,21 @@
 #include <vector>
 #include <functional>
 #include "lib/memberBind.h"
+#include "lib/APIWrappers.h"
 
 namespace lib {
     class event {
     private:
         static std::vector<event> allEvents;
-        static unsigned long long globalIdCounter;
+        inline static unsigned long long globalIdCounter = 0;
         
         std::function<bool(void)> triggerFunction;
         std::function<void(void)> effectFunction;
         unsigned long long id;
-    
+
+        static void taskTriggerFunction();
+        static lib::task eventTriggerTask;
+
     public:
         std::string nickname;
 
@@ -33,7 +37,6 @@ namespace lib {
 
         void remove();
 
-        static void taskTriggerFunction();
     };
 
     namespace triggers {
