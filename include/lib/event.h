@@ -47,6 +47,24 @@ namespace lib {
         using equal = std::equal_to<>;
         using not_equal = std::not_equal_to<>;
 
+        /** cmpTrigger: Returns a function that returns true when the comparison condition is met
+         *  
+         *  Template Params:
+         *  C is the only template parameter passed, and it should be one of the std::functional
+         *  comparison types (as are aliased above). It can, be any type with operator(a, b) defined,
+         *  but it's meant to be one of the comparison types. The returned function from cmpTrigger
+         *  will be true when C's operator(a, b) returns true.
+         *
+         * Params:
+         * A and B are both either functions or variables that will be compared in C's operator(a,b).
+         * Either A or B or both or neither can be functions, since the std::enable_if's allow for
+         * the compiler to correctly deduce which overload to use under each circumstance.
+         *
+         * Returns:
+         * cmpTrigger returns a function that returns the result of C's operator(a, b), with a or b
+         * or both or neither being called, depending on what they are.
+         **/
+
         template <typename C, typename A, typename B,
                   typename std::enable_if_t<std::is_invocable_v<A> && std::is_invocable_v<B>>* = nullptr>
         auto cmpTrigger(A&& a, B&& b) {
@@ -71,13 +89,17 @@ namespace lib {
             return [a = std::forward<A>(a), b = std::forward<B>(b), cmp{C {}}] { return cmp(a, b); };
         }
 
+        // Returns a function that returns true when a() in in the range [upper, lower] (inclusive),
+        // according to A::operator<(B) and A::operator>(B)
         template <typename A, typename B,
                   typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr>
         auto rangeTrigger(A&& a, B&& lower, B&& upper) {
             return [a = std::forward<A>(a), lower = std::forward<B>(lower), upper = std::forward<B>(upper)]
-                    { return a() <= upper && a() >= lower; };
+                    { auto& val = a(); return val <= upper && val >= lower; };
         }
 
+        // Returns a function that returns true if a in in the range [upper, lower] (inclusive),
+        // according to A::operator<(B) and A::operator>(B)
         template <typename A, typename B,
                   typename std::enable_if_t<!std::is_invocable_v<A>>* = nullptr>
         auto rangeTrigger(A&& a, B&& lower, B&& upper) {
@@ -85,12 +107,14 @@ namespace lib {
                     { return a <= upper && a >= lower; };
         }
         
+        // Returns a function that returns true when a() is equal to B
         template <bool B, typename A,
                   typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr>
         auto boolTrigger(A&& a) {
             return [a = std::forward<A>(a), b = std::forward<bool>(B)] { return a() == b; };
         }
 
+        // Returns a function that returns true when a is equal to B
         template <bool B, typename A,
                   typename std::enable_if_t<!std::is_invocable_v<A>>* = nullptr>
         auto boolTrigger(A&& a) {
