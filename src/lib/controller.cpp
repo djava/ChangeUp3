@@ -14,7 +14,7 @@ namespace lib {
                 HALController.print(obj.row, obj.col, obj.text);
                 printQueue.pop();
             }
-            lib::delay(55_ms);
+            lib::delay(52_ms);
         }
     }
 
