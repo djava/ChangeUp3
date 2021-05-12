@@ -15,6 +15,9 @@ namespace lib {
         
         std::function<bool(void)> triggerFunction;
         std::function<void(void)> effectFunction;
+        std::function<void(void)> elseFunction;
+
+        bool hasElse = false;
         unsigned long long id;
 
         static void taskTriggerFunction();
@@ -28,6 +31,11 @@ namespace lib {
               const std::string& nickname = "");
 
         event(const std::function<void(void)>& effectFunction,
+              const std::string& nickname = "");
+
+        event(const std::function<bool(void)>& triggerFunction,
+              const std::function<void(void)>& effectFunction,
+              const std::function<void(void)>& elseFunction,
               const std::string& nickname = "");
 
         ~event();

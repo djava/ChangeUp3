@@ -4,6 +4,8 @@
  #include "lib/event.h"
  #include "lib/motor.h"
  #include "lib/controller.h"
+#include "lib/units/QAngularSpeed.h"
+#include "lib/units/QPercent.h"
  #include "lib/units/units.h"
  using namespace lib;
  using namespace lib::triggers;
@@ -62,13 +64,15 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
 void opcontrol() {
     lib::motor drive1 (1);
-    lib::controller ctrlr (lib::controllerTypes::master);
-    using axes = joystickAxes;
+    lib::controller master (lib::controllerTypes::master);
+    using axis = joystickAxes;
 
-    auto x = event(
-                fallingEdgeFilter(cmpTrigger<less_equal>(memberBindArgs(ctrlr, getAxisPct, axes::leftX), 10_pct)),
-                memberBindArgs(drive1, stop, brakeMode::brake)
-                );
+    event driveWithDeadzone {
+        cmpTrigger<greater_equal>(memberBindArgs(master, getAxisPct, axis::leftX), 5_pct),
+        [&]{ drive1.spin(master.getAxisPct(axis::leftX)); },
+        memberBindArgs(drive1, stop, brakeMode::coast)
+    };
 }

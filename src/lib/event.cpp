@@ -28,10 +28,21 @@ namespace lib {
         allEvents.push_back(*this);
     }
 
+    // The else function will run if triggerFunction returns false
+    event::event(const std::function<bool(void)>& triggerFunction,
+                 const std::function<void(void)>& effectFunction,
+                 const std::function<void(void)>& elseFunction,
+                 const std::string& nickname)
+        : triggerFunction{triggerFunction}, effectFunction{effectFunction},
+          elseFunction{elseFunction}, nickname{nickname}, id{globalIdCounter++}
+    {
+        hasElse = true;
+        allEvents.push_back(*this);
+    }
+
 
     event::event(const event& other)
-        : triggerFunction{other.triggerFunction},
-          effectFunction{other.effectFunction},
+        : triggerFunction{other.triggerFunction}, effectFunction{other.effectFunction},
           nickname{other.nickname}, id{other.id} {}
 
     event::~event() {
@@ -51,6 +62,8 @@ namespace lib {
             for (auto& i: allEvents) {
                 if (i.triggerFunction()) {
                     i.effectFunction();
+                } else if (i.hasElse) {
+                    i.elseFunction();
                 }
             }
             lib::delay(20_ms);
