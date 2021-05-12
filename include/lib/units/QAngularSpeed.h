@@ -35,5 +35,12 @@ constexpr QAngularSpeed operator"" _rpm(long double x) {
 constexpr QAngularSpeed operator"" _rpm(unsigned long long int x) {
   return static_cast<double>(x) * rpm;
 }
+
+constexpr QAngularSpeed operator"" _cps(long double x) {
+  return x * cps;
+}
+constexpr QAngularSpeed operator"" _cps(unsigned long long int x) {
+  return static_cast<double>(x) * cps;
+}
 } // namespace literals
 } // namespace okapi
