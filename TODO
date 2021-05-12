@@ -1,0 +1,13 @@
+- Motor Group
+- Drivetrain
+- Finish wrapping
+- Odom API
+- Auton builder (reverser)
+- Motion Algs?
+- VEXCode side of HAL
+- GUI stuff? logging?
+- More overarching wrapper
+- Extensibility
+- Reorganization/Nomenclature
+- Comments
+- Docs, tutorials

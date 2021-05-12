@@ -64,8 +64,11 @@ void autonomous() {}
  */
 void opcontrol() {
     lib::motor drive1 (1);
-    lib::controller contmaster (lib::controllerTypes::master);
+    lib::controller ctrlr (lib::controllerTypes::master);
+    using axes = joystickAxes;
 
-    auto x = event(risingEdgeFilter(cmpTrigger<greater_equal>(memberBind(drive1, getTorque), 43_nM)),
-                   [&]{ drive1.spin(contmaster.getAxisPct(joystickAxes::leftX)); });
+    auto x = event(
+                fallingEdgeFilter(cmpTrigger<less_equal>(memberBindArgs(ctrlr, getAxisPct, axes::leftX), 10_pct)),
+                memberBindArgs(drive1, stop, brakeMode::brake)
+                );
 }

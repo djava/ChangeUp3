@@ -27,6 +27,9 @@ namespace lib {
               const std::function<void(void)>& effectFunction,
               const std::string& nickname = "");
 
+        event(const std::function<void(void)>& effectFunction,
+              const std::string& nickname = "");
+
         ~event();
 
         event(const event& other);

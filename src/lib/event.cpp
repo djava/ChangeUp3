@@ -18,6 +18,17 @@ namespace lib {
         allEvents.push_back(*this);
     }
 
+    // If no trigger function is provided, the effect funtion will run
+    // every cycle automically.  []{ return true; } is used as the trigger.
+    event::event(const std::function<void(void)>& effectFunction,
+                 const std::string& nickname)
+        : triggerFunction{[]{ return true; }}, effectFunction{effectFunction},
+          nickname{nickname}, id{globalIdCounter++}
+    {
+        allEvents.push_back(*this);
+    }
+
+
     event::event(const event& other)
         : triggerFunction{other.triggerFunction},
           effectFunction{other.effectFunction},
