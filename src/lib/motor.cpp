@@ -10,22 +10,22 @@ namespace lib {
     ) : HALMotor{HAL::motor(port, cartridge)}, cartridge{cartridge}, port{port},
         reversed{reversed}, currentBrakeMode(currentBrakeMode), nickname{nickname} { }
 
-    void motor::spin(const QVoltage& voltage) {
-        const int voltageInMillivolts = static_cast<int>(voltage.convert(millivolt));
+    // void motor::spin(const QVoltage& voltage) {
+    //     const int voltageInMillivolts = static_cast<int>(voltage.convert(millivolt));
 
-        HALMotor.spinMillivolts(voltageInMillivolts);
-    }
+    //     HALMotor.spinMillivolts(voltageInMillivolts);
+    // }
 
-    void motor::spin(const QAngularSpeed& velocity) {
-        const double velInRpm = velocity.convert(rpm);
+    void motor::spin(reactive<QAngularSpeed> velocity) {
+        const double velInRpm = velocity().convert(rpm);
 
         HALMotor.spinRPM(velInRpm);
     }
 
-    void motor::spin(const QPercent& percentVoltage) {
+    void motor::spin(reactive<QPercent> percentVoltage) {
         constexpr double maxVoltage = 12000.0;
         constexpr double maxPercentage = 100.0;
-        const double voltageInMV = percentVoltage.convert(percent) * maxVoltage / maxPercentage;
+        const double voltageInMV = percentVoltage().convert(percent) * maxVoltage / maxPercentage;
 
         HALMotor.spinMillivolts(voltageInMV);
     }

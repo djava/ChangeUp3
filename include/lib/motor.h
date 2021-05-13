@@ -1,6 +1,7 @@
 #pragma once
 #include "HAL/HAL.h"
 #include "units/units.h"
+#include "lib/reactive.h"
 
 namespace lib {
     using HAL::motorCart;
@@ -28,7 +29,7 @@ namespace lib {
 
         void spin(const QVoltage& voltage);
         void spin(const QAngularSpeed& velocity);
-        void spin(const QPercent& percent);
+        void spin(const QPercent& percentVoltage);
 
         void stop(const brakeMode& mode);
         

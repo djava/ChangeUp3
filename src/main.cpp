@@ -1,14 +1,14 @@
 #include "main.h"
 
 #include "lib/HAL/controller.h"
- #include "lib/event.h"
- #include "lib/motor.h"
- #include "lib/controller.h"
+#include "lib/event.h"
+#include "lib/motor.h"
+#include "lib/controller.h"
 #include "lib/units/QAngularSpeed.h"
 #include "lib/units/QPercent.h"
- #include "lib/units/units.h"
- using namespace lib;
- using namespace lib::triggers;
+#include "lib/units/units.h"
+using namespace lib;
+using namespace lib::triggers;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -66,13 +66,15 @@ void autonomous() {}
  */
 
 void opcontrol() {
-    lib::motor drive1 (1);
-    lib::controller master (lib::controllerTypes::master);
+    motor drive1 (1);
+    controller master (controllerTypes::master);
     using axis = joystickAxes;
 
     event driveWithDeadzone {
+        // fallingEdgeFilter([&]{ return master.getAxisPct(axis::leftX) > 5_pct; }),
         cmpTrigger<greater_equal>(memberBindArgs(master, getAxisPct, axis::leftX), 5_pct),
         [&]{ drive1.spin(master.getAxisPct(axis::leftX)); },
-        memberBindArgs(drive1, stop, brakeMode::coast)
+        [&]{ drive1.stop(brakeMode::coast); }
     };
+
 }
