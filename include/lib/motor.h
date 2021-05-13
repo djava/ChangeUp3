@@ -1,7 +1,6 @@
 #pragma once
 #include "HAL/HAL.h"
 #include "units/units.h"
-#include "lib/reactive.h"
 
 namespace lib {
     using HAL::motorCart;
