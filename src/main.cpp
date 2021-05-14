@@ -65,16 +65,16 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 
+
 void opcontrol() {
-    motor drive1 (1);
-    controller master (controllerTypes::master);
+    lib::motor drive1 (1);
+    lib::controller master (controllerTypes::master);
     using axis = joystickAxes;
 
-    event driveWithDeadzone {
-        // fallingEdgeFilter([&]{ return master.getAxisPct(axis::leftX) > 5_pct; }),
-        cmpTrigger<greater_equal>(memberBindArgs(master, getAxisPct, axis::leftX), 5_pct),
+    lib::event driveWithDeadzone {
+        cmpTrigger<greater>(movingAverageFilter<3>(memberBind(master, getAxisPct, axis::leftX), 0_pct), 5_pct),
         [&]{ drive1.spin(master.getAxisPct(axis::leftX)); },
-        [&]{ drive1.stop(brakeMode::coast); }
+        memberBind(drive1, stop, brakeMode::coast)
     };
 
 }

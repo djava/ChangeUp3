@@ -1,10 +1,7 @@
 #pragma once
 #include "lib/APIWrappers.h"
 #include "lib/memberBind.h"
-#include <algorithm>
 #include <functional>
-#include <type_traits>
-#include <utility>
 #include <vector>
 
 namespace lib {
@@ -151,7 +148,7 @@ auto boolTrigger(A &&a) {
 }
 
 inline namespace filters {
-template <typename A, typename = std::enable_if_t<std::is_invocable_v<A>> *>
+template <typename A, typename = std::enable_if_t<std::is_invocable_v<A>>>
 auto risingEdgeFilter(A &&a) {
   return [a = std::forward<A>(a)] {
     static bool on = false;
@@ -170,6 +167,45 @@ auto fallingEdgeFilter(A &&a) {
     return !on && oldOn;
   };
 }
+
+template <class T, std::size_t N>
+class averaging_ring_buffer {
+private:
+  std::array<T, N> buffer;
+  std::size_t index = 0;
+public:
+  void insert(T datum) {
+    buffer[index] = datum;
+    index += index % N;
+  }
+
+  T average(T zeroVal = T(0)) {
+    T total = zeroVal;
+    for (auto& i: buffer) { total += i; }
+    return total / N;
+  }
+};
+
+template <std::size_t samples, typename A, typename std::enable_if_t<!std::is_invocable_v<A>>* = nullptr>
+auto movingAverageFilter(A&& a, A&& zeroVal = A(0)) {
+  return [a = std::forward<A>(a), noneVal = std::forward<A>(zeroVal)] {
+    static averaging_ring_buffer<A, samples> queue {};
+    queue.insert(a);
+    return queue.average(noneVal);
+  };
+}
+
+template <std::size_t samples, typename A,
+          typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr,
+          typename return_t = std::invoke_result_t<A>>
+auto movingAverageFilter(A&& a, return_t&& zeroVal = return_t(0)) {
+  return [a = std::forward<A>(a), noneVal = std::forward<return_t>(zeroVal)] {
+    static averaging_ring_buffer<return_t, samples> queue {};
+    queue.insert(a());
+    return queue.average(noneVal);
+  };
+}
+
 } // namespace filters
 } // namespace triggers
 } // namespace lib
