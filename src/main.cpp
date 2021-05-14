@@ -76,5 +76,4 @@ void opcontrol() {
         [&]{ drive1.spin(master.getAxisPct(axis::leftX)); },
         memberBind(drive1, stop, brakeMode::coast)
     };
-
 }

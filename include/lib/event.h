@@ -168,18 +168,21 @@ auto fallingEdgeFilter(A &&a) {
   };
 }
 
-template <class T, std::size_t N>
+template <class T, std::size_t N, T zeroVal = T(0)>
 class averaging_ring_buffer {
-private:
+private: 
   std::array<T, N> buffer;
   std::size_t index = 0;
+
 public:
+  averaging_ring_buffer() { buffer.fill(zeroVal); }
+
   void insert(T datum) {
     buffer[index] = datum;
-    index += index % N;
+    index++; index %= N;
   }
 
-  T average(T zeroVal = T(0)) {
+  T average() {
     T total = zeroVal;
     for (auto& i: buffer) { total += i; }
     return total / N;
@@ -188,10 +191,10 @@ public:
 
 template <std::size_t samples, typename A, typename std::enable_if_t<!std::is_invocable_v<A>>* = nullptr>
 auto movingAverageFilter(A&& a, A&& zeroVal = A(0)) {
-  return [a = std::forward<A>(a), noneVal = std::forward<A>(zeroVal)] {
-    static averaging_ring_buffer<A, samples> queue {};
+  return [a = std::forward<A>(a), zeroVal = std::forward<A>(zeroVal)] {
+    static averaging_ring_buffer<A, samples, zeroVal> queue {};
     queue.insert(a);
-    return queue.average(noneVal);
+    return queue.average();
   };
 }
 
@@ -199,10 +202,10 @@ template <std::size_t samples, typename A,
           typename std::enable_if_t<std::is_invocable_v<A>>* = nullptr,
           typename return_t = std::invoke_result_t<A>>
 auto movingAverageFilter(A&& a, return_t&& zeroVal = return_t(0)) {
-  return [a = std::forward<A>(a), noneVal = std::forward<return_t>(zeroVal)] {
-    static averaging_ring_buffer<return_t, samples> queue {};
+  return [a = std::forward<A>(a), zeroVal = std::forward<return_t>(zeroVal)] {
+    static averaging_ring_buffer<return_t, samples, zeroVal> queue {};
     queue.insert(a());
-    return queue.average(noneVal);
+    return queue.average();
   };
 }
 
